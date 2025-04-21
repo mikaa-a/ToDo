@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>896</width>
+    <height>578</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1920</width>
+    <height>1200</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="central_widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>-10</x>
+     <y>0</y>
+     <width>1541</width>
+     <height>921</height>
+    </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>1920</width>
+     <height>1200</height>
+    </size>
+   </property>
+   <widget class="QStackedWidget" name="content">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>911</width>
+      <height>581</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="no_lists_page">
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>190</y>
+        <width>511</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>20</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="no_lists_text">
+         <property name="font">
+          <font>
+           <family>Google Sans</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>У вас нет списков</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="no_lists_questions">
+         <property name="font">
+          <font>
+           <family>Google Sans</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Запланируем что нибудь?</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="add_list_btn">
+         <property name="font">
+          <font>
+           <family>Google Sans</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Добавить список</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="my_lists_text">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>30</y>
+        <width>509</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Google Sans</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>Мои списки</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="list_page">
+     <widget class="QPushButton" name="back_to_list_btn">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>60</y>
+        <width>181</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Вернуться ко всем спискам</string>
+      </property>
+     </widget>
+     <widget class="QScrollArea" name="tasks_scroll_area">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>130</y>
+        <width>771</width>
+        <height>391</height>
+       </rect>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="tasks_container">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>769</width>
+         <height>389</height>
+        </rect>
+       </property>
+       <widget class="QWidget" name="verticalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>771</width>
+          <height>391</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="tasks_layout"/>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>20</y>
+        <width>861</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="list_text">
+         <property name="text">
+          <string>Список 1</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="add_task_btn">
+         <property name="text">
+          <string>Добавить задачу</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="edit_list_btn">
+         <property name="text">
+          <string>Редактировать список</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
