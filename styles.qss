@@ -32,3 +32,11 @@
     width: 541px;
     color: #000000;
 }
+
+#task_card {
+    background-color: #F7EBE1;
+    border-radius: 8px;
+    max-height: 200px;
+    min-height: 200px;
+    color: #353028
+}
