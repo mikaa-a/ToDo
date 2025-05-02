@@ -90,15 +90,15 @@ class TaskCard(QWidget):
     def get_priority_text(self, priority: int):
         match priority:
             case 1:
-                return "Низкий"
+                return "Низкий приоритет"
             case 2:
-                return "Средний"
+                return "Средний приоритет"
             case 3:
-                return "Высокий"
+                return "Высокий приоритет   "
             case 0:
-                return "Не задан"
+                return "Приоритет не задан"
             case _:
-                return "Не задан"
+                return "Приоритет не задан"
 
     def format_date(self, date_str: str) -> str:
         if not date_str:
@@ -137,6 +137,7 @@ class MainWindow(QMainWindow):
         self.ui.content.setContentsMargins(self.MARGIN, self.MARGIN, self.MARGIN, self.MARGIN)
 
         self.tasks_widget = QWidget()
+        self.tasks_widget.setObjectName("tasks_widget")
   
         self.tasks_layout = QVBoxLayout(self.tasks_widget)
         self.tasks_layout.setAlignment(Qt.AlignTop)

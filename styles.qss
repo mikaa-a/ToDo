@@ -1,5 +1,5 @@
 #central_widget, #content {
-    background-color: #050505;
+    background-color: #F3F2F3;
 }
 
 #no_lists_text {
@@ -30,29 +30,30 @@
     border-radius: 16px;
     height: 99px;
     width: 541px;
-    color: #000000;
+    color: #F3F2F3;
 }
 
 #task_name {
     font-size: 28px;
     font-weight: 400;
     color: #353028;
+    margin-top: 4px;
 }
 
 #task_top_info {
-    font-size: 20px;
+    font-size: 16px;
     color: #353028;
     font-weight: 300;
 }
 
 #description_label, #subtasks_label {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
     color: #353028;
 }
 
 #task_description, #task_sub_tasks {
-    font-size: 20px;
+    font-size: 18px;
     color: #353028;
     font-weight: 300;
 }
@@ -67,7 +68,7 @@
 #task_checkbox::indicator {
     width: 24px;
     height: 24px;
-    border: 2px solid #353028;
+    border: 1px solid #353028;
     border-radius: 6px;
     background-color: none;
 }
@@ -83,4 +84,94 @@
 
 #task_checkbox::indicator:checked:hover {
     background-color: #8AB38B;
+}
+
+#add_task_btn, #edit_list_btn {
+    background-color: transparent;
+    color: #353028;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 0 10px;
+    text-align: right;
+    min-width: 130px;
+    white-space: nowrap;
+}
+
+#edit_list_btn {
+    background-color: transparent;
+    color: #353028;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 0 10px;
+    text-align: left;
+    min-width: 220px;
+    white-space: nowrap;
+}
+
+#separator_dot {
+    color: #353028;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+#widget {
+    justify-content: flex-end;
+}
+
+#list_text {
+    color: #353028;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+    min-height: 10px;
+}
+
+#back_to_list_btn {
+    background-color: transparent;
+    border: none;
+    color: #353028;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: left;
+}
+
+#tasks_scroll_area {
+    border: none;
+    background-color: transparent;
+}
+
+#tasks_scroll_area > QWidget > QWidget {
+    background-color: transparent;
+    border-radius: 12px;
+}
+
+#tasks_scroll_area QScrollBar:vertical {
+    border: none;
+    background-color: transparent;
+    width: 8px;
+     margin: 0 0 0 4px;
+}
+
+#tasks_scroll_area QScrollBar::handle:vertical {
+    background-color: #B1CCBB;
+    border-radius: 2px;
+    min-height: 30px;
+}
+
+#tasks_scroll_area QScrollBar::add-line:vertical,
+#tasks_scroll_area QScrollBar::sub-line:vertical {
+    height: 0;
+}
+
+#tasks_scroll_area QScrollBar::add-page:vertical,
+#tasks_scroll_area QScrollBar::sub-page:vertical {
+    background: transparent;
+}
+
+#add_task_btn:hover, #edit_list_btn:hover, #back_to_list_btn:hover {
+    color: #6C946D;
+}
+
+#task_checkbox {
+    margin-top: 4px;
 }

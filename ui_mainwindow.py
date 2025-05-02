@@ -93,15 +93,24 @@ class Ui_Form(object):
         self.horizontalLayout = QHBoxLayout(self.widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setSpacing(0)
+        self.horizontalLayout.setAlignment(Qt.AlignRight)
+
         self.list_text = QLabel(self.widget)
         self.list_text.setObjectName(u"list_text")
 
         self.horizontalLayout.addWidget(self.list_text)
+        self.horizontalLayout.addStretch()
 
         self.add_task_btn = QPushButton(self.widget)
         self.add_task_btn.setObjectName(u"add_task_btn")
 
         self.horizontalLayout.addWidget(self.add_task_btn)
+
+        self.separator_dot = QLabel(self.widget)
+        self.separator_dot.setObjectName(u"separator_dot")
+        self.separator_dot.setText("•")
+        self.horizontalLayout.addWidget(self.separator_dot)
 
         self.edit_list_btn = QPushButton(self.widget)
         self.edit_list_btn.setObjectName(u"edit_list_btn")
