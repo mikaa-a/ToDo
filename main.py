@@ -1,4 +1,5 @@
 import sys
+import json
 from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame
 from PySide6.QtCore import QFile, Qt, QDate
 from ui_mainwindow import Ui_Form
@@ -148,8 +149,35 @@ class MainWindow(QMainWindow):
         self.ui.tasks_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         self.ui.add_task_btn.clicked.connect(self.show_add_task_dialog)
+        
+        # Загружаем задачи при инициализации
+        self.load_tasks_from_json()
 
         self.ui.content.setCurrentIndex(1)  # Show list_page at startup for testing
+
+    def load_tasks_from_json(self):
+        try:
+            with open('data.json', 'r', encoding='utf-8') as file:
+                data = json.load(file)
+                if data and len(data) > 0:
+                    # Берем первый список задач
+                    first_list = data[0]
+                    for task in first_list['tasks']:
+                        # Форматируем подзадачи в строку
+                        subtasks_text = ""
+                        if task['task_subtasks']:
+                            subtasks_text = "\n".join([subtask['subtask_name'] for subtask in task['task_subtasks']])
+                        
+                        # Добавляем задачу в интерфейс
+                        self.add_task_to_layout(
+                            task['task_name'],
+                            task['task_due_date'],
+                            task['task_priority'],
+                            task['task_description'],
+                            subtasks_text
+                        )
+        except Exception as e:
+            print(f"Ошибка при загрузке задач: {e}")
 
     def add_task_to_layout(self, text: str, date: str, priority: str, description: str, sub_tasks: str):
         task = TaskCard(text, date, priority, description, sub_tasks)

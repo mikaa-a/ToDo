@@ -1,0 +1,22 @@
+[
+    {
+        "list_name": "Список задач",
+        "id": 1,
+        "tasks": [
+            {
+                "id": 1,
+                "task_name": "Задача 1",
+                "task_description": "Описание задачи 1",
+                "task_priority": 1,
+                "task_due_date": "2025-01-01",
+                "task_is_done": false,
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Подзадача 1"
+                    }
+                ]
+            }
+        ]
+    }
+]

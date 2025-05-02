@@ -34,42 +34,53 @@
 }
 
 #task_name {
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 28px;
+    font-weight: 400;
+    color: #353028;
 }
 
 #task_top_info {
-    font-size: 14px;
-    color: #666666;
+    font-size: 20px;
+    color: #353028;
+    font-weight: 300;
 }
 
 #description_label, #subtasks_label {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
-    color: #666666;
+    color: #353028;
 }
 
 #task_description, #task_sub_tasks {
-    font-size: 14px;
+    font-size: 20px;
     color: #353028;
+    font-weight: 300;
 }
 
 #edit_button {
-    background-color: #F7EBE1;
-    border: 1px solid #353028;
-    border-radius: 4px;
-    padding: 5px 10px;
-    color: #353028;
+    background-color: #6C946D;
+    border-radius: 6px;
+    padding: 2px 8px;
+    color: #F3F2F3;
 }
 
-#edit_button:hover {
-    background-color: #353028;
-    color: #F7EBE1;
+#task_checkbox::indicator {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #353028;
+    border-radius: 6px;
+    background-color: none;
 }
 
-#task_card {
-    background-color: #F7EBE1;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 10px 0;
+#task_checkbox::indicator:checked {
+    background-color: #6C946D;
+    border-color: none;
+}
+
+#task_checkbox::indicator:hover {
+    border-color: #8AB38B;
+}
+
+#task_checkbox::indicator:checked:hover {
+    background-color: #8AB38B;
 }
