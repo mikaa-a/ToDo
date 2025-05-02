@@ -33,10 +33,43 @@
     color: #000000;
 }
 
+#task_name {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#task_top_info {
+    font-size: 14px;
+    color: #666666;
+}
+
+#description_label, #subtasks_label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666666;
+}
+
+#task_description, #task_sub_tasks {
+    font-size: 14px;
+    color: #353028;
+}
+
+#edit_button {
+    background-color: #F7EBE1;
+    border: 1px solid #353028;
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: #353028;
+}
+
+#edit_button:hover {
+    background-color: #353028;
+    color: #F7EBE1;
+}
+
 #task_card {
     background-color: #F7EBE1;
     border-radius: 8px;
-    max-height: 200px;
-    min-height: 200px;
-    color: #353028
+    padding: 15px;
+    margin: 10px 0;
 }

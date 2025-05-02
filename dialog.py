@@ -88,4 +88,9 @@ class AddTaskDialog(QDialog):
     def get_due_date(self):
         return self.date_edit.date().toString("ddd, d MMMM yyyy")
 
+    def get_description(self):
+        return self.task_description_input.toPlainText()
 
+    def get_subtasks(self):
+        return self.subtasks_input.toPlainText()
+    
