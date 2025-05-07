@@ -3,11 +3,13 @@ import json
 from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame, QMessageBox
 from PySide6.QtCore import QFile, Qt, QDate
 from ui_mainwindow import Ui_Form
-from dialog import AddTaskDialog
+from dialog import AddTaskDialog, EditListDialog
 
 class TaskCard(QWidget):
-    def __init__(self, text: str, date: str, priority: str, description: str, sub_tasks: str):
+    def __init__(self, text: str, date: str, priority: str, description: str, sub_tasks: str, task_id: int, parent=None):
         super().__init__()
+        self.task_id = task_id
+        self.parent = parent
         
         # Создаем контейнер для стилей
         self.container = QFrame()
@@ -67,16 +69,32 @@ class TaskCard(QWidget):
         self.subtasks_label.setObjectName("subtasks_label")
         self.main_layout.addWidget(self.subtasks_label)
 
-        # Создаем контейнер для подзадач
+        # Создаем контейнер для подзадач с прокруткой
+        self.subtasks_scroll = QScrollArea()
+        self.subtasks_scroll.setWidgetResizable(True)
+        self.subtasks_scroll.setMaximumHeight(150)  # Максимальная высота
+        self.subtasks_scroll.setMinimumHeight(0)    # Минимальная высота
+        self.subtasks_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.subtasks_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+                
         self.subtasks_container = QWidget()
         self.subtasks_layout = QVBoxLayout(self.subtasks_container)
         self.subtasks_layout.setSpacing(5)
         self.subtasks_layout.setContentsMargins(0, 0, 0, 0)
-        self.main_layout.addWidget(self.subtasks_container)
+        self.subtasks_scroll.setWidget(self.subtasks_container)
+        self.main_layout.addWidget(self.subtasks_scroll)
 
         # Добавляем подзадачи с чекбоксами
         if sub_tasks:
             subtasks_list = [subtask.strip() for subtask in sub_tasks.split(';') if subtask.strip()]
+            
+            # Вычисляем необходимую высоту для контейнера
+            total_height = len(subtasks_list) * 30  # Примерная высота одной подзадачи
+            if total_height < 150:
+                self.subtasks_scroll.setFixedHeight(total_height)
+            else:
+                self.subtasks_scroll.setFixedHeight(150)
+                
             for i, subtask in enumerate(subtasks_list, 1):
                 subtask_widget = QWidget()
                 subtask_layout = QHBoxLayout(subtask_widget)
@@ -97,12 +115,13 @@ class TaskCard(QWidget):
                 self.subtasks_layout.addWidget(subtask_widget)
         else:
             self.subtasks_label.setVisible(False)
-            self.subtasks_container.setVisible(False)
+            self.subtasks_scroll.setVisible(False)
 
         # Кнопка редактирования
         self.edit_button = QPushButton("Редактировать")
         self.edit_button.setObjectName("edit_button")
         self.edit_button.setFixedWidth(100)
+        self.edit_button.clicked.connect(self.edit_task)
         self.main_layout.addWidget(self.edit_button, alignment=Qt.AlignRight)
 
         # Устанавливаем layout для основного виджета
@@ -144,6 +163,109 @@ class TaskCard(QWidget):
             print(f"Ошибка при форматировании даты: {e}")
             return "Дата не задана"
 
+    def edit_task(self):
+        dialog = AddTaskDialog(self)
+        dialog.setWindowTitle("Редактировать задачу")
+        
+        # Заполняем поля текущими данными
+        dialog.task_name_input.setText(self.task_name.text())
+        dialog.task_description_input.setText(self.task_description.text())
+        
+        # Устанавливаем дату
+        date = QDate.fromString(self.top_info.text().split(' • ')[0], "d MMMM yyyy")
+        if date.isValid():
+            dialog.date_edit.setDate(self.format_date(date))
+            
+        # Устанавливаем приоритет
+        priority_text = self.top_info.text().split(' • ')[1].strip()
+        priority_map = {
+            "Низкий приоритет": 1,
+            "Средний приоритет": 2,
+            "Высокий приоритет": 3,
+            "Приоритет не задан": 0
+        }
+        dialog.priority_group.button(priority_map.get(priority_text, 0)).setChecked(True)
+        
+        # Устанавливаем подзадачи
+        subtasks = []
+        for i in range(self.subtasks_layout.count()):
+            widget = self.subtasks_layout.itemAt(i).widget()
+            if widget:
+                label = widget.findChild(QLabel)
+                if label:
+                    subtasks.append(label.text())
+        dialog.subtasks_input.setText("; ".join(subtasks))
+        
+        if dialog.exec() == QDialog.Accepted:
+            # Обновляем данные в карточке
+            self.task_name.setText(dialog.get_task_name())
+            self.task_description.setText(dialog.get_description())
+            self.top_info.setText(f"{self.format_date(dialog.get_due_date())} • {self.get_priority_text(dialog.get_priority())}")
+            
+            # Обновляем подзадачи
+            for i in reversed(range(self.subtasks_layout.count())):
+                self.subtasks_layout.itemAt(i).widget().deleteLater()
+            
+            subtasks = dialog.get_subtasks()
+            if subtasks:
+                subtasks_list = [subtask.strip() for subtask in subtasks.split(';') if subtask.strip()]
+                for i, subtask in enumerate(subtasks_list, 1):
+                    subtask_widget = QWidget()
+                    subtask_layout = QHBoxLayout(subtask_widget)
+                    subtask_layout.setContentsMargins(0, 0, 0, 0)
+                    subtask_layout.setSpacing(4)
+                    
+                    checkbox = QCheckBox()
+                    checkbox.setObjectName(f"subtask_checkbox_{i}")
+                    subtask_layout.addWidget(checkbox)
+                    
+                    label = QLabel(subtask)
+                    label.setObjectName(f"subtask_label_{i}")
+                    label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                    subtask_layout.addWidget(label)
+                    
+                    subtask_layout.addStretch()
+                    
+                    self.subtasks_layout.addWidget(subtask_widget)
+                
+                self.subtasks_label.setVisible(True)
+                self.subtasks_scroll.setVisible(True)
+            else:
+                self.subtasks_label.setVisible(False)
+                self.subtasks_scroll.setVisible(False)
+            
+            # Обновляем данные в JSON
+            try:
+                with open('data.json', 'r', encoding='utf-8') as file:
+                    data = json.load(file)
+                
+                # Находим задачу по ID
+                task_list = data[0]
+                for task in task_list['tasks']:
+                    if task['id'] == self.task_id:
+                        task['task_name'] = dialog.get_task_name()
+                        task['task_description'] = dialog.get_description()
+                        task['task_priority'] = dialog.get_priority()
+                        task['task_due_date'] = dialog.get_due_date()
+                        
+                        # Обновляем подзадачи
+                        task['task_subtasks'] = []
+                        if subtasks:
+                            subtasks_list = [subtask.strip() for subtask in subtasks.split(';') if subtask.strip()]
+                            for i, subtask in enumerate(subtasks_list, 1):
+                                task['task_subtasks'].append({
+                                    "id": i,
+                                    "subtask_name": subtask
+                                })
+                        break
+                
+                # Сохраняем обновленные данные
+                with open('data.json', 'w', encoding='utf-8') as file:
+                    json.dump(data, file, ensure_ascii=False, indent=4)
+                    
+            except Exception as e:
+                print(f"Ошибка при обновлении задачи: {e}")
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -173,6 +295,7 @@ class MainWindow(QMainWindow):
         self.ui.tasks_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         self.ui.add_task_btn.clicked.connect(self.show_add_task_dialog)
+        self.ui.edit_list_btn.clicked.connect(self.show_edit_list_dialog)
         
         # Загружаем задачи при инициализации
         self.load_tasks_from_json()
@@ -198,13 +321,14 @@ class MainWindow(QMainWindow):
                             task['task_due_date'],
                             task['task_priority'],
                             task['task_description'],
-                            subtasks_text
+                            subtasks_text,
+                            task['id']
                         )
         except Exception as e:
             print(f"Ошибка при загрузке задач: {e}")
 
-    def add_task_to_layout(self, text: str, date: str, priority: str, description: str, sub_tasks: str):
-        task = TaskCard(text, date, priority, description, sub_tasks)
+    def add_task_to_layout(self, text: str, date: str, priority: str, description: str, sub_tasks: str, task_id: int):
+        task = TaskCard(text, date, priority, description, sub_tasks, task_id, self)
         self.tasks_layout.addWidget(task)
 
     def show_add_task_dialog(self):
@@ -217,7 +341,7 @@ class MainWindow(QMainWindow):
             sub_tasks = dialog.get_subtasks()
             
             # Добавляем задачу в интерфейс
-            self.add_task_to_layout(task_name, date, priority, description, sub_tasks)
+            self.add_task_to_layout(task_name, date, priority, description, sub_tasks, len(self.tasks_layout.items()) + 1)
             
             # Сохраняем задачу в JSON
             try:
@@ -257,6 +381,42 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 print(f"Ошибка при сохранении задачи: {e}")
 
+    def show_edit_list_dialog(self):
+        dialog = EditListDialog(self.ui.list_text.text(), self)
+        result = dialog.exec()
+        
+        if result == QDialog.Accepted:
+            # Обновляем название списка
+            new_name = dialog.get_list_name()
+            if new_name.strip():
+                self.ui.list_text.setText(new_name)
+                # Обновляем название в JSON
+                try:
+                    with open('data.json', 'r', encoding='utf-8') as file:
+                        data = json.load(file)
+                    data[0]['list_name'] = new_name
+                    with open('data.json', 'w', encoding='utf-8') as file:
+                        json.dump(data, file, ensure_ascii=False, indent=4)
+                except Exception as e:
+                    print(f"Ошибка при обновлении названия списка: {e}")
+        elif result == 2:  # Код удаления списка
+            # Удаляем все задачи из интерфейса
+            while self.tasks_layout.count():
+                item = self.tasks_layout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
+            
+            # Очищаем JSON файл
+            try:
+                with open('data.json', 'w', encoding='utf-8') as file:
+                    json.dump([{
+                        "list_name": "Новый список",
+                        "id": 1,
+                        "tasks": []
+                    }], file, ensure_ascii=False, indent=4)
+                self.ui.list_text.setText("Новый список")
+            except Exception as e:
+                print(f"Ошибка при удалении списка: {e}")
 
 def load_stylesheet(path):
     try:

@@ -176,7 +176,7 @@
     margin-top: 4px;
 }
 
-QCheckBox[objectName^="subtask_checkbox_"]::indicator {
+#QCheckBox[objectName^="subtask_checkbox_"]::indicator {
     width: 20px;
     height: 20px;
     border: 1px solid #353028;
@@ -184,21 +184,74 @@ QCheckBox[objectName^="subtask_checkbox_"]::indicator {
     background-color: none;
 }
 
-QCheckBox[objectName^="subtask_checkbox_"]::indicator:checked {
+#QCheckBox[objectName^="subtask_checkbox_"]::indicator:checked {
     background-color: #6C946D;
     border-color: none;
 }
 
-QCheckBox[objectName^="subtask_checkbox_"]::indicator:hover {
+#QCheckBox[objectName^="subtask_checkbox_"]::indicator:hover {
     border-color: #8AB38B;
 }
 
-QCheckBox[objectName^="subtask_checkbox_"]::indicator:checked:hover {
+#QCheckBox[objectName^="subtask_checkbox_"]::indicator:checked:hover {
     background-color: #8AB38B;
 }
 
-QLabel[objectName^="subtask_label_"] {
+#QLabel[objectName^="subtask_label_"] {
     font-size: 16px;
     color: #353028;
     font-weight: 300;
+}
+#QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+#QScrollBar:vertical {
+    border: none;
+    background-color: transparent;
+    width: 8px;
+    margin: 0 0 0 4px;
+}
+
+#QScrollBar::handle:vertical {
+    background-color: #B1CCBB;
+    border-radius: 2px;
+    min-height: 30px;
+}
+
+#QScrollBar::add-line:vertical,          
+#QScrollBar::sub-line:vertical {
+    height: 0;
+}
+        
+#QScrollBar::add-page:vertical,
+#QScrollBar::sub-page:vertical {
+    background: transparent;
+}
+
+#delete_button {
+    background-color: #FF6B6B;
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#delete_button:hover {
+    background-color: #FF5252;
+}
+
+#done_button {
+    background-color: #6C946D;
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#done_button:hover {
+    background-color: #8AB38B;
 }

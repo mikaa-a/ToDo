@@ -1,14 +1,14 @@
 [
     {
-        "list_name": "Список задач",
+        "list_name": "Список 2",
         "id": 1,
         "tasks": [
             {
                 "id": 1,
-                "task_name": "Задача 1",
-                "task_description": "Описание задачи 1",
-                "task_priority": 1,
-                "task_due_date": "2025-01-01",
+                "task_name": "задача 1",
+                "task_description": "Описание задачи ",
+                "task_priority": 3,
+                "task_due_date": "Wed, 7 May 2025",
                 "task_is_done": false,
                 "task_subtasks": [
                     {
@@ -61,6 +61,114 @@
                     },
                     {
                         "id": 3,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 4,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 5,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 6,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 7,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 8,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 9,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 10,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 11,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 12,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 13,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 14,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 15,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 16,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 17,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 18,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 19,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 20,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 21,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 22,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 23,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 24,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 25,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 26,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 27,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 28,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 29,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 30,
                         "subtask_name": "ту"
                     }
                 ]

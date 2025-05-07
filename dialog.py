@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QTextEdit, QHBoxLayout, QRadioButton, QButtonGroup, QLabel, QDateEdit, QMessageBox
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QTextEdit, QHBoxLayout, QRadioButton, QButtonGroup, QLabel, QDateEdit, QMessageBox, QPushButton
 from PySide6.QtCore import Qt, QDate, QLocale
 
 class AddTaskDialog(QDialog):
@@ -99,4 +99,45 @@ class AddTaskDialog(QDialog):
             QMessageBox.warning(self, "Ошибка", "Название задачи не может быть пустым")
             return
         super().accept()
+
+class EditListDialog(QDialog):
+    def __init__(self, current_name: str, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Редактировать список")
+        self.setFixedSize(400, 200)
+        self.init_ui(current_name)
+
+    def init_ui(self, current_name: str):
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        # Поле для ввода названия
+        name_label = QLabel("Название списка:")
+        layout.addWidget(name_label)
+        
+        self.list_name_input = QLineEdit()
+        self.list_name_input.setText(current_name)
+        self.list_name_input.setPlaceholderText("Введите название списка")
+        layout.addWidget(self.list_name_input)
+
+        # Кнопки
+        button_layout = QHBoxLayout()
+        
+        self.delete_button = QPushButton("Удалить")
+        self.delete_button.setObjectName("delete_button")
+        self.delete_button.clicked.connect(self.delete_list)
+        button_layout.addWidget(self.delete_button)
+        
+        self.done_button = QPushButton("Готово")
+        self.done_button.setObjectName("done_button")
+        self.done_button.clicked.connect(self.accept)
+        button_layout.addWidget(self.done_button)
+        
+        layout.addLayout(button_layout)
+
+    def get_list_name(self):
+        return self.list_name_input.text()
+
+    def delete_list(self):
+        self.done(2)  # Специальный код для удаления списка
     
