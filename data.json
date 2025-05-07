@@ -16,6 +16,54 @@
                         "subtask_name": "Подзадача 1"
                     }
                 ]
+            },
+            {
+                "id": 2,
+                "task_name": "приготовить пельмешки",
+                "task_description": "пожарить в кисло-сладком соусе со специями",
+                "task_priority": 3,
+                "task_due_date": "Wed, 7 May 2025",
+                "task_is_done": false,
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "вскипятить воду"
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "кинуть пельмении"
+                    },
+                    {
+                        "id": 3,
+                        "subtask_name": "пожарить"
+                    },
+                    {
+                        "id": 4,
+                        "subtask_name": "съесть"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "task_name": "тутуту",
+                "task_description": "тутуту",
+                "task_priority": 1,
+                "task_due_date": "Wed, 7 May 2025",
+                "task_is_done": false,
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "ту"
+                    },
+                    {
+                        "id": 3,
+                        "subtask_name": "ту"
+                    }
+                ]
             }
         ]
     }

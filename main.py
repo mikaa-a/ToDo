@@ -1,6 +1,6 @@
 import sys
 import json
-from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame
+from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame, QMessageBox
 from PySide6.QtCore import QFile, Qt, QDate
 from ui_mainwindow import Ui_Form
 from dialog import AddTaskDialog
@@ -67,14 +67,37 @@ class TaskCard(QWidget):
         self.subtasks_label.setObjectName("subtasks_label")
         self.main_layout.addWidget(self.subtasks_label)
 
-        if not sub_tasks:
-            self.subtasks_label.setVisible(False)
+        # Создаем контейнер для подзадач
+        self.subtasks_container = QWidget()
+        self.subtasks_layout = QVBoxLayout(self.subtasks_container)
+        self.subtasks_layout.setSpacing(5)
+        self.subtasks_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.addWidget(self.subtasks_container)
+
+        # Добавляем подзадачи с чекбоксами
+        if sub_tasks:
+            subtasks_list = [subtask.strip() for subtask in sub_tasks.split(';') if subtask.strip()]
+            for i, subtask in enumerate(subtasks_list, 1):
+                subtask_widget = QWidget()
+                subtask_layout = QHBoxLayout(subtask_widget)
+                subtask_layout.setContentsMargins(0, 0, 0, 0)
+                subtask_layout.setSpacing(4)
+                
+                checkbox = QCheckBox()
+                checkbox.setObjectName(f"subtask_checkbox_{i}")
+                subtask_layout.addWidget(checkbox)
+                
+                label = QLabel(subtask)
+                label.setObjectName(f"subtask_label_{i}")
+                label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                subtask_layout.addWidget(label)
+                
+                subtask_layout.addStretch()
+                
+                self.subtasks_layout.addWidget(subtask_widget)
         else:
-            self.subtasks_label.setVisible(True)
-        
-        self.task_sub_tasks = QLabel(sub_tasks)
-        self.task_sub_tasks.setObjectName("task_sub_tasks")
-        self.main_layout.addWidget(self.task_sub_tasks)
+            self.subtasks_label.setVisible(False)
+            self.subtasks_container.setVisible(False)
 
         # Кнопка редактирования
         self.edit_button = QPushButton("Редактировать")
@@ -167,7 +190,7 @@ class MainWindow(QMainWindow):
                         # Форматируем подзадачи в строку
                         subtasks_text = ""
                         if task['task_subtasks']:
-                            subtasks_text = "\n".join([subtask['subtask_name'] for subtask in task['task_subtasks']])
+                            subtasks_text = "; ".join([subtask['subtask_name'] for subtask in task['task_subtasks']])
                         
                         # Добавляем задачу в интерфейс
                         self.add_task_to_layout(
@@ -192,11 +215,47 @@ class MainWindow(QMainWindow):
             priority = dialog.get_priority()
             description = dialog.get_description()
             sub_tasks = dialog.get_subtasks()
-           
-            if not task_name:
-                return
             
+            # Добавляем задачу в интерфейс
             self.add_task_to_layout(task_name, date, priority, description, sub_tasks)
+            
+            # Сохраняем задачу в JSON
+            try:
+                with open('data.json', 'r', encoding='utf-8') as file:
+                    data = json.load(file)
+                
+                # Получаем первый список задач
+                task_list = data[0]
+                
+                # Создаем новую задачу
+                new_task = {
+                    "id": len(task_list['tasks']) + 1,
+                    "task_name": task_name,
+                    "task_description": description,
+                    "task_priority": priority,
+                    "task_due_date": date,
+                    "task_is_done": False,
+                    "task_subtasks": []
+                }
+                
+                # Добавляем подзадачи
+                if sub_tasks:
+                    subtasks_list = [subtask.strip() for subtask in sub_tasks.split(';') if subtask.strip()]
+                    for i, subtask in enumerate(subtasks_list, 1):
+                        new_task["task_subtasks"].append({
+                            "id": i,
+                            "subtask_name": subtask
+                        })
+                
+                # Добавляем задачу в список
+                task_list['tasks'].append(new_task)
+                
+                # Сохраняем обновленные данные
+                with open('data.json', 'w', encoding='utf-8') as file:
+                    json.dump(data, file, ensure_ascii=False, indent=4)
+                    
+            except Exception as e:
+                print(f"Ошибка при сохранении задачи: {e}")
 
 
 def load_stylesheet(path):

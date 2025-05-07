@@ -175,3 +175,30 @@
 #task_checkbox {
     margin-top: 4px;
 }
+
+QCheckBox[objectName^="subtask_checkbox_"]::indicator {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #353028;
+    border-radius: 4px;
+    background-color: none;
+}
+
+QCheckBox[objectName^="subtask_checkbox_"]::indicator:checked {
+    background-color: #6C946D;
+    border-color: none;
+}
+
+QCheckBox[objectName^="subtask_checkbox_"]::indicator:hover {
+    border-color: #8AB38B;
+}
+
+QCheckBox[objectName^="subtask_checkbox_"]::indicator:checked:hover {
+    background-color: #8AB38B;
+}
+
+QLabel[objectName^="subtask_label_"] {
+    font-size: 16px;
+    color: #353028;
+    font-weight: 300;
+}

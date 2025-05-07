@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QTextEdit, QHBoxLayout, QRadioButton, QButtonGroup, QLabel, QDateEdit
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QTextEdit, QHBoxLayout, QRadioButton, QButtonGroup, QLabel, QDateEdit, QMessageBox
 from PySide6.QtCore import Qt, QDate, QLocale
 
 class AddTaskDialog(QDialog):
@@ -45,7 +45,7 @@ class AddTaskDialog(QDialog):
         layout.addWidget(subtasks_label)
         
         self.subtasks_input = QTextEdit()
-        self.subtasks_input.setPlaceholderText("Введите подзадачи")
+        self.subtasks_input.setPlaceholderText("Введите подзадачи через точку с запятой (;)")
         layout.addWidget(self.subtasks_input)
         self.subtasks_input.setFixedHeight(100)
 
@@ -93,4 +93,10 @@ class AddTaskDialog(QDialog):
 
     def get_subtasks(self):
         return self.subtasks_input.toPlainText()
+
+    def accept(self):
+        if not self.task_name_input.text().strip():
+            QMessageBox.warning(self, "Ошибка", "Название задачи не может быть пустым")
+            return
+        super().accept()
     
