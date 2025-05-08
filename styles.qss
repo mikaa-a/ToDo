@@ -255,3 +255,35 @@
 #done_button:hover {
     background-color: #8AB38B;
 }
+
+#QFrame#task_card {
+    background-color: #B1CCBB;
+    border-radius: 12px;
+    padding: 12px;           
+            }
+            
+#QWidget {
+                background-color: #8AB38B;
+                border-radius: 8px;
+            }
+
+            QScrollArea {
+                border: none;
+            }
+
+            QCheckBox {
+                        spacing: 5px;
+                    }
+                    QCheckBox::indicator {
+                        width: 4px;
+                        height: 4px;
+                        border: 2px solid #4A4A4A;
+                        border-radius: 4px;
+                    }
+                    QCheckBox::indicator:checked {
+                        background-color: #4A4A4A;
+                        border: 2px solid #4A4A4A;
+                    }
+                    QCheckBox::indicator:unchecked:hover {
+                        border: 2px solid #666666;
+                    }

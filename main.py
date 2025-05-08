@@ -76,11 +76,23 @@ class TaskCard(QWidget):
         self.subtasks_scroll.setMinimumHeight(0)    # Минимальная высота
         self.subtasks_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.subtasks_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.subtasks_scroll.setStyleSheet("""
+            QScrollArea {
+                border: none;
+                background-color: transparent;
+            }
+        """)
                 
         self.subtasks_container = QWidget()
+        self.subtasks_container.setStyleSheet("""
+            QWidget {
+                background-color: #B1CCBB;
+                border-radius: 8px;
+            }
+        """)
         self.subtasks_layout = QVBoxLayout(self.subtasks_container)
         self.subtasks_layout.setSpacing(5)
-        self.subtasks_layout.setContentsMargins(0, 0, 0, 0)
+        self.subtasks_layout.setContentsMargins(10, 10, 10, 10)
         self.subtasks_scroll.setWidget(self.subtasks_container)
         self.main_layout.addWidget(self.subtasks_scroll)
 
@@ -91,7 +103,7 @@ class TaskCard(QWidget):
             # Вычисляем необходимую высоту для контейнера
             total_height = len(subtasks_list) * 30  # Примерная высота одной подзадачи
             if total_height < 150:
-                self.subtasks_scroll.setFixedHeight(total_height)
+                self.subtasks_scroll.setFixedHeight(total_height + 20)  # Добавляем отступы
             else:
                 self.subtasks_scroll.setFixedHeight(150)
                 
@@ -102,12 +114,36 @@ class TaskCard(QWidget):
                 subtask_layout.setSpacing(4)
                 
                 checkbox = QCheckBox()
-                checkbox.setObjectName(f"subtask_checkbox_{i}")
+                checkbox.setObjectName("task_checkbox")
+                checkbox.setStyleSheet("""
+                    QCheckBox {
+                        spacing: 5px;
+                    }
+                    QCheckBox::indicator {
+                        width: 16px;
+                        height: 16px;
+                        border: 1px solid #353028;
+                        border-radius: 3px;
+                    }
+                    QCheckBox::indicator:checked {
+                        background-color: #6C946D;
+                        border: none;
+                    }
+                    QCheckBox::indicator:hover {
+                        border-color: #8AB38B;
+                    }
+                    QCheckBox::indicator:checked:hover {
+                        background-color: #8AB38B;
+                    }
+                """)
+                checkbox.clicked.connect(lambda checked, w=subtask_widget: self.handle_subtask_click(checked, w))
                 subtask_layout.addWidget(checkbox)
                 
                 label = QLabel(subtask)
                 label.setObjectName(f"subtask_label_{i}")
                 label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                label.setCursor(Qt.PointingHandCursor)
+                label.mousePressEvent = lambda event, cb=checkbox, w=subtask_widget: self.toggle_subtask_checkbox(event, cb, w)
                 subtask_layout.addWidget(label)
                 
                 subtask_layout.addStretch()
@@ -222,6 +258,8 @@ class TaskCard(QWidget):
                     label = QLabel(subtask)
                     label.setObjectName(f"subtask_label_{i}")
                     label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                    label.setCursor(Qt.PointingHandCursor)
+                    label.mousePressEvent = lambda event, cb=checkbox, w=subtask_widget: self.toggle_subtask_checkbox(event, cb, w)
                     subtask_layout.addWidget(label)
                     
                     subtask_layout.addStretch()
@@ -265,6 +303,62 @@ class TaskCard(QWidget):
                     
             except Exception as e:
                 print(f"Ошибка при обновлении задачи: {e}")
+
+    def handle_subtask_click(self, checked, widget):
+        # Зачеркиваем или возвращаем текст
+        label = widget.findChild(QLabel)
+        if label:
+            if checked:
+                label.setStyleSheet("text-decoration: line-through; color: #666666;")
+                # Перемещаем виджет в конец списка
+                self.subtasks_layout.removeWidget(widget)
+                self.subtasks_layout.addWidget(widget)
+            else:
+                label.setStyleSheet("")
+                # Перемещаем виджет в начало списка
+                self.subtasks_layout.removeWidget(widget)
+                self.subtasks_layout.insertWidget(0, widget)
+                
+        # Сохраняем состояние в JSON
+        try:
+            with open('data.json', 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            
+            # Находим задачу по ID
+            task_list = data[0]
+            for task in task_list['tasks']:
+                if task['id'] == self.task_id:
+                    # Находим подзадачу по тексту
+                    label = widget.findChild(QLabel)
+                    if label:
+                        subtask_text = label.text()
+                        # Находим и обновляем подзадачу
+                        for subtask in task['task_subtasks']:
+                            if subtask['subtask_name'] == subtask_text:
+                                subtask['is_completed'] = checked
+                                if checked:
+                                    # Перемещаем подзадачу в конец списка
+                                    task['task_subtasks'].remove(subtask)
+                                    task['task_subtasks'].append(subtask)
+                                else:
+                                    # Перемещаем подзадачу в начало списка
+                                    task['task_subtasks'].remove(subtask)
+                                    task['task_subtasks'].insert(0, subtask)
+                                break
+                    break
+            
+            # Сохраняем обновленные данные
+            with open('data.json', 'w', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+                
+        except Exception as e:
+            print(f"Ошибка при сохранении состояния подзадачи: {e}")
+
+    def toggle_subtask_checkbox(self, event, checkbox, widget):
+        # Переключаем состояние чекбокса
+        checkbox.setChecked(not checkbox.isChecked())
+        # Вызываем обработчик изменения состояния
+        self.handle_subtask_click(checkbox.isChecked(), widget)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -341,7 +435,7 @@ class MainWindow(QMainWindow):
             sub_tasks = dialog.get_subtasks()
             
             # Добавляем задачу в интерфейс
-            self.add_task_to_layout(task_name, date, priority, description, sub_tasks, len(self.tasks_layout.items()) + 1)
+            self.add_task_to_layout(task_name, date, priority, description, sub_tasks, self.tasks_layout.count() + 1)
             
             # Сохраняем задачу в JSON
             try:
@@ -368,7 +462,8 @@ class MainWindow(QMainWindow):
                     for i, subtask in enumerate(subtasks_list, 1):
                         new_task["task_subtasks"].append({
                             "id": i,
-                            "subtask_name": subtask
+                            "subtask_name": subtask,
+                            "is_completed": False
                         })
                 
                 # Добавляем задачу в список
