@@ -15,15 +15,15 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
-    QScrollArea, QSizePolicy, QStackedWidget, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QLabel,
+    QPushButton, QScrollArea, QSizePolicy, QStackedWidget,
+    QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(896, 578)
+        Form.resize(895, 582)
         Form.setMaximumSize(QSize(1920, 1200))
         self.central_widget = QWidget(Form)
         self.central_widget.setObjectName(u"central_widget")
@@ -87,35 +87,43 @@ class Ui_Form(object):
         self.tasks_layout.setObjectName(u"tasks_layout")
         self.tasks_layout.setContentsMargins(0, 0, 0, 0)
         self.tasks_scroll_area.setWidget(self.tasks_container)
-        self.widget = QWidget(self.list_page)
-        self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(40, 20, 861, 26))
-        self.horizontalLayout = QHBoxLayout(self.widget)
+        self.layoutWidget1 = QWidget(self.list_page)
+        self.layoutWidget1.setObjectName(u"layoutWidget1")
+        self.layoutWidget1.setGeometry(QRect(40, 20, 861, 26))
+        self.horizontalLayout = QHBoxLayout(self.layoutWidget1)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout.setSpacing(0)
-        self.horizontalLayout.setAlignment(Qt.AlignRight)
-
-        self.list_text = QLabel(self.widget)
+        self.list_text = QLabel(self.layoutWidget1)
         self.list_text.setObjectName(u"list_text")
 
         self.horizontalLayout.addWidget(self.list_text)
-        self.horizontalLayout.addStretch()
 
-        self.add_task_btn = QPushButton(self.widget)
+        self.add_task_btn = QPushButton(self.layoutWidget1)
         self.add_task_btn.setObjectName(u"add_task_btn")
 
         self.horizontalLayout.addWidget(self.add_task_btn)
 
-        self.separator_dot = QLabel(self.widget)
-        self.separator_dot.setObjectName(u"separator_dot")
-        self.separator_dot.setText("•")
-        self.horizontalLayout.addWidget(self.separator_dot)
-
-        self.edit_list_btn = QPushButton(self.widget)
+        self.edit_list_btn = QPushButton(self.layoutWidget1)
         self.edit_list_btn.setObjectName(u"edit_list_btn")
 
         self.horizontalLayout.addWidget(self.edit_list_btn)
+
+        self.horizontalLayoutWidget = QWidget(self.list_page)
+        self.horizontalLayoutWidget.setObjectName(u"horizontalLayoutWidget")
+        self.horizontalLayoutWidget.setGeometry(QRect(40, 90, 421, 31))
+        self.sort_layout = QHBoxLayout(self.horizontalLayoutWidget)
+        self.sort_layout.setSpacing(8)
+        self.sort_layout.setObjectName(u"sort_layout")
+        self.sort_layout.setContentsMargins(0, 0, 0, 0)
+        self.priority_sort_select = QComboBox(self.horizontalLayoutWidget)
+        self.priority_sort_select.setObjectName(u"priority_sort_select")
+
+        self.sort_layout.addWidget(self.priority_sort_select)
+
+        self.sort_btn = QPushButton(self.horizontalLayoutWidget)
+        self.sort_btn.setObjectName(u"sort_btn")
+
+        self.sort_layout.addWidget(self.sort_btn)
 
         self.content.addWidget(self.list_page)
 
@@ -137,5 +145,6 @@ class Ui_Form(object):
         self.list_text.setText(QCoreApplication.translate("Form", u"\u0421\u043f\u0438\u0441\u043e\u043a 1", None))
         self.add_task_btn.setText(QCoreApplication.translate("Form", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443", None))
         self.edit_list_btn.setText(QCoreApplication.translate("Form", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0441\u043f\u0438\u0441\u043e\u043a", None))
+        self.sort_btn.setText(QCoreApplication.translate("Form", u"PushButton", None))
     # retranslateUi
 

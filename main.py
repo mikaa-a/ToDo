@@ -388,6 +388,11 @@ class MainWindow(QMainWindow):
         self.ui.tasks_scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.ui.tasks_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
+        # Инициализация комбо бокса для сортировки
+        self.ui.priority_sort_select.addItems(["по возрастанию", "по убыванию", "все приоритеты"])
+        self.ui.sort_btn.setText("Применить")
+        self.ui.sort_btn.clicked.connect(self.sort_tasks)
+
         self.ui.add_task_btn.clicked.connect(self.show_add_task_dialog)
         self.ui.edit_list_btn.clicked.connect(self.show_edit_list_dialog)
         
@@ -512,6 +517,36 @@ class MainWindow(QMainWindow):
                 self.ui.list_text.setText("Новый список")
             except Exception as e:
                 print(f"Ошибка при удалении списка: {e}")
+
+    def sort_tasks(self):
+        # Получаем текущий выбор из комбо бокса
+        sort_type = self.ui.priority_sort_select.currentText()
+        
+        # Получаем все задачи из layout
+        tasks = []
+        while self.tasks_layout.count():
+            item = self.tasks_layout.takeAt(0)
+            if item.widget():
+                tasks.append(item.widget())
+        
+        # Сортируем задачи в зависимости от выбранного типа
+        if sort_type == "по возрастанию":
+            tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()))
+        elif sort_type == "по убыванию":
+            tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()), reverse=True)
+        
+        # Добавляем отсортированные задачи обратно в layout
+        for task in tasks:
+            self.tasks_layout.addWidget(task)
+
+    def get_priority_value(self, priority_text):
+        priority_map = {
+            "Низкий приоритет": 1,
+            "Средний приоритет": 2,
+            "Высокий приоритет": 3,
+            "Приоритет не задан": 0
+        }
+        return priority_map.get(priority_text, 0)
 
 def load_stylesheet(path):
     try:

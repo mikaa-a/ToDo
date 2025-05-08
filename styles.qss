@@ -114,10 +114,6 @@
     font-weight: 300;
 }
 
-#widget {
-    justify-content: flex-end;
-}
-
 #list_text {
     color: #353028;
     font-size: 28px;
@@ -287,3 +283,54 @@
                     QCheckBox::indicator:unchecked:hover {
                         border: 2px solid #666666;
                     }
+
+#priority_btn {
+    background-color: #B1CCBB;
+    border-radius: 8px;
+    color: #353028;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 4px 16px;
+    border: none;
+    min-width: 170px;
+    min-height: 40px;
+    max-height: 40px;
+    text-align: left;
+}
+#priority_btn:hover {
+    background-color: #B1CCBB;
+}
+
+#apply_sort_btn {
+    background-color: #6C946D;
+    border-radius: 8px;
+    color: #F3F2F3;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 4px 16px;
+    border: none;
+    min-width: 170px;
+    min-height: 40px;
+    max-height: 40px;
+}
+#apply_sort_btn:hover {
+    background-color: #6C946D;
+}
+
+QMenu#priority_menu {
+    background-color: #6C946D;
+    border-radius: 8px;
+    padding: 4px 0;
+    min-width: 170px;
+}
+QMenu#priority_menu::item {
+    color: #F3F2F3;
+    font-size: 20px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: transparent;
+}
+QMenu#priority_menu::item:selected {
+    background-color: #4A7C5B;
+    color: #F3F2F3;
+}
