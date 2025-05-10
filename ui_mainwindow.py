@@ -75,7 +75,7 @@ class Ui_Form(object):
         self.back_to_list_btn.setGeometry(QRect(40, 60, 181, 21))
         self.tasks_scroll_area = QScrollArea(self.list_page)
         self.tasks_scroll_area.setObjectName(u"tasks_scroll_area")
-        self.tasks_scroll_area.setGeometry(QRect(40, 130, 771, 391))
+        self.tasks_scroll_area.setGeometry(QRect(40, 150, 771, 391))
         self.tasks_scroll_area.setWidgetResizable(True)
         self.tasks_container = QWidget()
         self.tasks_container.setObjectName(u"tasks_container")
@@ -110,7 +110,7 @@ class Ui_Form(object):
 
         self.horizontalLayoutWidget = QWidget(self.list_page)
         self.horizontalLayoutWidget.setObjectName(u"horizontalLayoutWidget")
-        self.horizontalLayoutWidget.setGeometry(QRect(40, 90, 421, 31))
+        self.horizontalLayoutWidget.setGeometry(QRect(40, 90, 421, 51))
         self.sort_layout = QHBoxLayout(self.horizontalLayoutWidget)
         self.sort_layout.setSpacing(8)
         self.sort_layout.setObjectName(u"sort_layout")

@@ -256,33 +256,12 @@
     background-color: #B1CCBB;
     border-radius: 12px;
     padding: 12px;           
-            }
+}
             
 #QWidget {
-                background-color: #8AB38B;
-                border-radius: 8px;
-            }
-
-            QScrollArea {
-                border: none;
-            }
-
-            QCheckBox {
-                        spacing: 5px;
-                    }
-                    QCheckBox::indicator {
-                        width: 4px;
-                        height: 4px;
-                        border: 2px solid #4A4A4A;
-                        border-radius: 4px;
-                    }
-                    QCheckBox::indicator:checked {
-                        background-color: #4A4A4A;
-                        border: 2px solid #4A4A4A;
-                    }
-                    QCheckBox::indicator:unchecked:hover {
-                        border: 2px solid #666666;
-                    }
+    background-color: #8AB38B;
+    border-radius: 8px;
+}
 
 #priority_btn {
     background-color: #B1CCBB;
@@ -297,6 +276,7 @@
     max-height: 40px;
     text-align: left;
 }
+
 #priority_btn:hover {
     background-color: #B1CCBB;
 }
@@ -315,6 +295,7 @@
 }
 #apply_sort_btn:hover {
     background-color: #6C946D;
+    
 }
 
 QMenu#priority_menu {
@@ -322,6 +303,7 @@ QMenu#priority_menu {
     border-radius: 8px;
     padding: 4px 0;
     min-width: 170px;
+    
 }
 QMenu#priority_menu::item {
     color: #F3F2F3;
@@ -333,4 +315,121 @@ QMenu#priority_menu::item {
 QMenu#priority_menu::item:selected {
     background-color: #4A7C5B;
     color: #F3F2F3;
+
+}
+
+#priority_sort_select {
+    background-color: #6C946D;
+    border: none;
+    border-radius: 8px;
+    color: #F3F2F3;
+    font-size: 20px;
+    font-weight: 350px;
+    padding: 4px 16px;
+    max-width: 190px;
+    min-height: 30px;
+    max-height: 30px;
+    text-align: left;
+    
+}
+
+#priority_sort_select::drop-down {
+    border: none;
+    width: 30px;
+    background: transparent;
+    box-shadow: none;
+
+}
+
+#priority_sort_select::drop-down:open {
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    box-shadow: none;
+
+}
+
+#priority_sort_select::down-arrow {
+    image: none;
+    width: 20px;
+    height: 20px;
+    background: none;
+    color: #353028;
+    font-size: 20px;
+    content: "▼";
+}
+
+#priority_sort_select:open::down-arrow {
+    content: "▲";
+}
+
+#priority_sort_select QAbstractItemView {
+    background-color: #6C946D;
+    border: none;
+    border-radius: 8px;
+    color: #F3F2F3;
+    font-size: 20px;
+    font-weight: 300;
+    padding: 8px;
+    selection-background-color: #B1CCBB;
+    selection-color: #F3F2F3;
+    outline: none;
+    margin-top: 8px;
+    box-shadow: none;
+}
+
+#priority_sort_select QAbstractItemView::item:last {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+#priority_sort_select QAbstractItemView::item {
+    min-height: 30px;
+    padding: 4px 6px;
+    text-align: left;
+    margin: 0;
+}
+
+#priority_sort_select QAbstractItemView::item:selected {
+    background-color: #B1CCBB;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+#sort_btn {
+    background-color: #6C946D;
+    border: none;
+    border-radius: 8px;
+    color: #F3F2F3;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 4px 12px;
+    min-width: 105px;
+    max-width: 105px;
+    min-height: 30px;
+    max-height: 30px;
+    margin: 5px 0;
+}
+
+#sort_btn:hover {
+    background-color: #8AB38B;
+}
+
+#sort_btn:pressed {
+    background-color: #4A7C5B;
+    color: F3F2F3;
+}
+
+#tasks_widget {
+    margin-top: 38px;
+}
+
+#sort_container {
+    min-height: 50px;
+    padding: 10px 0;
+    margin-left: 0;
+    margin-right: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }

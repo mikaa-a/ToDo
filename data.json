@@ -234,27 +234,27 @@
                 "task_description": "олег просто олег",
                 "task_priority": 3,
                 "task_due_date": "Sun, 1 June 2025",
-                "task_is_done": true,
+                "task_is_done": false,
                 "task_subtasks": [
                     {
-                        "id": 4,
-                        "subtask_name": "Г",
-                        "is_completed": true
+                        "id": 1,
+                        "subtask_name": "О",
+                        "is_completed": false
                     },
                     {
                         "id": 3,
                         "subtask_name": "Е",
-                        "is_completed": true
+                        "is_completed": false
+                    },
+                    {
+                        "id": 4,
+                        "subtask_name": "Г",
+                        "is_completed": false
                     },
                     {
                         "id": 2,
                         "subtask_name": "Л",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 1,
-                        "subtask_name": "О",
-                        "is_completed": true
+                        "is_completed": false
                     }
                 ]
             },

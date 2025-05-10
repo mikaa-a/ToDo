@@ -141,7 +141,7 @@
       <property name="geometry">
        <rect>
         <x>40</x>
-        <y>130</y>
+        <y>150</y>
         <width>771</width>
         <height>391</height>
        </rect>
@@ -210,7 +210,7 @@
         <x>40</x>
         <y>90</y>
         <width>421</width>
-        <height>31</height>
+        <height>51</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="sort_layout">

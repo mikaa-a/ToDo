@@ -33,6 +33,7 @@ class TaskCard(QWidget):
         # Чекбокс и название задачи
         self.checkbox = QCheckBox()
         self.checkbox.setObjectName("task_checkbox")
+        self.checkbox.clicked.connect(self.handle_task_click)  # Подключаем обработчик
         self.top_layout.addWidget(self.checkbox)
         
         self.task_name = QLabel(text)
@@ -304,6 +305,61 @@ class TaskCard(QWidget):
             except Exception as e:
                 print(f"Ошибка при обновлении задачи: {e}")
 
+    def handle_task_click(self, checked):
+        # Зачеркиваем или возвращаем текст названия задачи
+        if checked:
+            self.task_name.setStyleSheet("text-decoration: line-through; color: #666666;")
+            # Перемещаем виджет в конец списка
+            self.parent.tasks_layout.removeWidget(self)
+            self.parent.tasks_layout.addWidget(self)
+            
+            # Отмечаем все подзадачи как выполненные
+            for i in range(self.subtasks_layout.count()):
+                widget = self.subtasks_layout.itemAt(i).widget()
+                if widget:
+                    checkbox = widget.findChild(QCheckBox)
+                    label = widget.findChild(QLabel)
+                    if checkbox and label:
+                        checkbox.setChecked(True)
+                        label.setStyleSheet("text-decoration: line-through; color: #666666;")
+        else:
+            self.task_name.setStyleSheet("")
+            # Перемещаем виджет в начало списка
+            self.parent.tasks_layout.removeWidget(self)
+            self.parent.tasks_layout.insertWidget(0, self)
+            
+            # Снимаем отметки со всех подзадач
+            for i in range(self.subtasks_layout.count()):
+                widget = self.subtasks_layout.itemAt(i).widget()
+                if widget:
+                    checkbox = widget.findChild(QCheckBox)
+                    label = widget.findChild(QLabel)
+                    if checkbox and label:
+                        checkbox.setChecked(False)
+                        label.setStyleSheet("")
+        
+        # Обновляем состояние в JSON
+        try:
+            with open('data.json', 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            
+            # Находим задачу по ID
+            task_list = data[0]
+            for task in task_list['tasks']:
+                if task['id'] == self.task_id:
+                    task['task_is_done'] = checked
+                    # Обновляем состояние подзадач
+                    for subtask in task['task_subtasks']:
+                        subtask['is_completed'] = checked
+                    break
+            
+            # Сохраняем обновленные данные
+            with open('data.json', 'w', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+                
+        except Exception as e:
+            print(f"Ошибка при сохранении состояния задачи: {e}")
+
     def handle_subtask_click(self, checked, widget):
         # Зачеркиваем или возвращаем текст
         label = widget.findChild(QLabel)
@@ -389,10 +445,11 @@ class MainWindow(QMainWindow):
         self.ui.tasks_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         # Инициализация комбо бокса для сортировки
-        self.ui.priority_sort_select.addItems(["по возрастанию", "по убыванию", "все приоритеты"])
+        self.ui.sort_layout.setAlignment(Qt.AlignLeft)
+        self.ui.priority_sort_select.addItems(["По возрастанию", "По убыванию", "Все приоритеты"])
         self.ui.sort_btn.setText("Применить")
         self.ui.sort_btn.clicked.connect(self.sort_tasks)
-
+    
         self.ui.add_task_btn.clicked.connect(self.show_add_task_dialog)
         self.ui.edit_list_btn.clicked.connect(self.show_edit_list_dialog)
         
