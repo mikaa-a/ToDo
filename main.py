@@ -431,6 +431,7 @@ class MainWindow(QMainWindow):
         self.MARGIN = 20
         self.ui.content.setContentsMargins(self.MARGIN, self.MARGIN, self.MARGIN, self.MARGIN)
 
+
         self.tasks_widget = QWidget()
         self.tasks_widget.setObjectName("tasks_widget")
   

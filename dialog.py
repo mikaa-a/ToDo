@@ -5,7 +5,7 @@ class AddTaskDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Добавить задачу")
-        self.setFixedSize(500, 500)
+        self.setFixedSize(500, 600)
         self.init_ui()
 
     def init_ui(self):
