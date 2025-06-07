@@ -1,8 +1,8 @@
 import sys
 import json
-from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame, QMessageBox, QLayout
+from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame, QMessageBox, QLayout, QComboBox
 from PySide6.QtCore import QFile, Qt, QDate, QRect
-from ui.ui_mainwindow import Ui_Form
+from ui_mainwindow import Ui_Form
 from dialogs.dialog import AddTaskDialog, EditListDialog
 from tasks.task_card import TaskCard
 from utils.helpers import load_stylesheet
@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         # Создаем центральный виджет
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
-        
+
         # Создаем главный лейаут для центрального виджета
         self.central_layout = QVBoxLayout(self.central_widget)
         self.central_layout.setContentsMargins(0, 0, 0, 0)  # Убираем нижний отступ
@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
         # Инициализируем UI
         self.ui = Ui_Form()
         self.ui.setupUi(content_container)
+        self.stacked_widget = self.ui.content
 
         # Удаляем старую геометрию content
         self.ui.content.setGeometry(QRect())
@@ -143,12 +144,12 @@ class MainWindow(QMainWindow):
         bottom_menu_layout.setAlignment(Qt.AlignHCenter)
         
         # Настраиваем внутренний лейаут меню
-        self.ui.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.ui.horizontalLayout_2.setSpacing(5)  # Минимальное расстояние между кнопками
-        self.ui.horizontalLayout_2.setAlignment(Qt.AlignCenter)
+        self.ui.top_bar_layout.setContentsMargins(0, 0, 0, 0)
+        self.ui.top_bar_layout.setSpacing(5)  # Минимальное расстояние между кнопками
+        self.ui.top_bar_layout.setAlignment(Qt.AlignCenter)
         
         # Настраиваем кнопки меню
-        for button in [self.ui.pushButton_5, self.ui.pushButton_2, self.ui.pushButton_3]:
+        for button in [self.ui.all_task_btn, self.ui.all_lists_btn, self.ui.focus_mode_btn]:
             button.setFixedSize(50, 50)
             button.setContentsMargins(0, 0, 0, 0)
             button.setStyleSheet("margin: 0; padding: 0;")
@@ -177,7 +178,7 @@ class MainWindow(QMainWindow):
                 pass  # Игнорируем ошибки с уже удаленными виджетами
 
         # Устанавливаем текущую страницу
-        self.ui.content.setCurrentIndex(1)  # Show list_page at startup
+        self.stacked_widget.setCurrentIndex(1)  # Show list_page at startup
 
         # Инициализация комбо бокса для сортировки
         self.ui.sort_layout.setAlignment(Qt.AlignLeft)
@@ -192,9 +193,14 @@ class MainWindow(QMainWindow):
         self.load_tasks_from_json()
 
         # Устанавливаем текст для кнопок нижнего меню
-        self.ui.pushButton_5.setText("1")
-        self.ui.pushButton_2.setText("2")
-        self.ui.pushButton_3.setText("3")
+        self.ui.all_task_btn.setText("1")
+        self.ui.all_lists_btn.setText("2")
+        self.ui.focus_mode_btn.setText("3")
+
+        # Подключаем обработчики для кнопок нижнего меню
+        self.ui.focus_mode_btn.clicked.connect(self.show_focus_page)
+        self.ui.all_task_btn.clicked.connect(self.show_all_tasks_page)
+        self.ui.all_lists_btn.clicked.connect(self.show_all_lists_page)
 
         # Подключаем обработчик изменения размера окна
         self.resizeEvent = self.handle_resize
@@ -367,6 +373,15 @@ class MainWindow(QMainWindow):
         except:
             # В случае ошибки парсинга даты возвращаем максимальное значение
             return float('inf')
+
+    def show_all_tasks_page(self):
+        self.stacked_widget.setCurrentIndex(4)  # Переключаем на focus_page
+
+    def show_all_lists_page(self):
+        self.stacked_widget.setCurrentIndex(3)  # Переключаем на focus_page
+
+    def show_focus_page(self):
+        self.stacked_widget.setCurrentIndex(2)  # Переключаем на focus_page
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -632,8 +632,8 @@ QCalendarWidget QTableView::item:disabled {
     background-color: #B1CCBB;
     min-height: 51px;
     max-height: 51px;
-    min-width: 170px;
-    max-width: 170px;
+    min-width: 150px;
+    max-width: 150px;
     border-radius: 8px 8px 0 0;
     margin: 0 auto;
     border: none;
@@ -641,7 +641,7 @@ QCalendarWidget QTableView::item:disabled {
 }
 
 #horizontalLayout_2 {
-    spacing: 0;
+    spacing: -10px;
     margin: 0;
     padding: 0;
     border: none;
@@ -651,14 +651,14 @@ QCalendarWidget QTableView::item:disabled {
     width: 100%;
 }
 
-#pushButton_5, #pushButton_2, #pushButton_3 {
+#focus_mode_btn, #all_task_btn, #all_lists_btn {
     background-color: transparent;
     border: none;
     color: #F3F2F3;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 400;
-    min-width: 50px;
-    max-width: 50px;
+    min-width: 35px;
+    max-width: 35px;
     min-height: 50px;
     max-height: 50px;
     margin: 0;
@@ -666,7 +666,7 @@ QCalendarWidget QTableView::item:disabled {
     position: relative;
 }
 
-#pushButton_5:hover, #pushButton_2:hover, #pushButton_3:hover {
+#focus_mode_btn:hover, #all_task_btn:hover, #all_lists_btn:hover {
     color: #F3F2F3;
     background-color: transparent;
 }

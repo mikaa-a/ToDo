@@ -127,6 +127,25 @@ class Ui_Form(object):
         self.sort_layout.addWidget(self.sort_btn)
 
         self.content.addWidget(self.list_page)
+        
+        # Добавляем страницу фокуса
+        self.focus_page = QWidget()
+        self.focus_page.setObjectName(u"focus_page")
+        self.focus_layout = QVBoxLayout(self.focus_page)
+        self.focus_layout.setContentsMargins(38, 38, 38, 38)
+        self.focus_layout.setSpacing(10)
+        
+        # Добавляем заголовок страницы фокуса
+        self.focus_title = QLabel(self.focus_page)
+        self.focus_title.setObjectName(u"focus_title")
+        font = QFont()
+        font.setFamilies([u"Google Sans"])
+        self.focus_title.setFont(font)
+        self.focus_title.setText("Режим фокуса")
+        self.focus_layout.addWidget(self.focus_title)
+        
+        self.content.addWidget(self.focus_page)
+
         self.pushButton_4 = QPushButton(self.central_widget)
         self.pushButton_4.setObjectName(u"pushButton_4")
         self.pushButton_4.setGeometry(QRect(470, 620, 51, 41))
