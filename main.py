@@ -102,12 +102,19 @@ class MainWindow(QMainWindow):
         # Добавляем лейаут сортировки в главный лейаут
         self.list_page_layout.addLayout(self.sort_layout)
 
+        # Создаем контейнер для области прокрутки
+        scroll_container = QWidget()
+        scroll_container.setObjectName("scroll_container")
+        scroll_container_layout = QHBoxLayout(scroll_container)
+        scroll_container_layout.setContentsMargins(0, 0, 0, 0)
+        scroll_container_layout.setSpacing(0)
+        
         # Настраиваем область прокрутки
         self.ui.tasks_scroll_area.setWidgetResizable(True)
         self.ui.tasks_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.ui.tasks_scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.ui.tasks_scroll_area.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)  # Фиксированная ширина
-        self.ui.tasks_scroll_area.setFixedWidth(1000)  # Увеличиваем фиксированную ширину
+        self.ui.tasks_scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # Делаем адаптивную ширину
+        self.ui.tasks_scroll_area.setMinimumWidth(600)  # Минимальная ширина
         self.ui.tasks_scroll_area.setMinimumHeight(0)
         
         # Создаем виджет для задач
@@ -119,7 +126,7 @@ class MainWindow(QMainWindow):
         self.tasks_layout = QVBoxLayout(self.tasks_widget)
         self.tasks_layout.setAlignment(Qt.AlignTop)
         self.tasks_layout.setSpacing(10)
-        self.tasks_layout.setContentsMargins(0, 0, 0, 22)  # Добавляем нижний отступ 22px
+        self.tasks_layout.setContentsMargins(0, 0, 0, 72)  # Увеличиваем нижний отступ до 72px (51px меню + 21px дополнительный отступ)
         
         # Устанавливаем виджет задач в область прокрутки
         self.ui.tasks_scroll_area.setWidget(self.tasks_widget)

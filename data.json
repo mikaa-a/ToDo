@@ -37,11 +37,6 @@
                 "task_is_done": false,
                 "task_subtasks": [
                     {
-                        "id": 5,
-                        "subtask_name": "тутут",
-                        "is_completed": false
-                    },
-                    {
                         "id": 4,
                         "subtask_name": "вскипятить воду",
                         "is_completed": false
@@ -65,6 +60,11 @@
                         "id": 3,
                         "subtask_name": "пожарить",
                         "is_completed": false
+                    },
+                    {
+                        "id": 5,
+                        "subtask_name": "тутут",
+                        "is_completed": true
                     }
                 ]
             },
@@ -234,27 +234,27 @@
                 "task_description": "олег просто олег",
                 "task_priority": 3,
                 "task_due_date": "Sun, 1 June 2025",
-                "task_is_done": false,
+                "task_is_done": true,
                 "task_subtasks": [
                     {
                         "id": 1,
                         "subtask_name": "О",
-                        "is_completed": false
+                        "is_completed": true
                     },
                     {
                         "id": 3,
                         "subtask_name": "Е",
-                        "is_completed": false
+                        "is_completed": true
                     },
                     {
                         "id": 4,
                         "subtask_name": "Г",
-                        "is_completed": false
+                        "is_completed": true
                     },
                     {
                         "id": 2,
                         "subtask_name": "Л",
-                        "is_completed": false
+                        "is_completed": true
                     }
                 ]
             },
@@ -264,7 +264,7 @@
                 "task_description": "",
                 "task_priority": 2,
                 "task_due_date": "Thu, 8 May 2025",
-                "task_is_done": false,
+                "task_is_done": true,
                 "task_subtasks": []
             }
         ]
