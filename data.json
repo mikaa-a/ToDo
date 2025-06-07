@@ -9,22 +9,22 @@
                 "task_description": "Описание задачи ",
                 "task_priority": 3,
                 "task_due_date": "Thu, 8 May 2025",
-                "task_is_done": false,
+                "task_is_done": true,
                 "task_subtasks": [
                     {
                         "id": 2,
                         "subtask_name": "подзадача 2",
-                        "is_completed": false
+                        "is_completed": true
                     },
                     {
                         "id": 1,
                         "subtask_name": "Подзадача 1",
-                        "is_completed": false
+                        "is_completed": true
                     },
                     {
                         "id": 3,
                         "subtask_name": "подзадача 3",
-                        "is_completed": false
+                        "is_completed": true
                     }
                 ]
             },
