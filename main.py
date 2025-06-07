@@ -19,38 +19,69 @@ class MainWindow(QMainWindow):
         
         # Создаем главный лейаут для центрального виджета
         self.central_layout = QVBoxLayout(self.central_widget)
-        self.central_layout.setContentsMargins(0, 0, 0, 0)
+        self.central_layout.setContentsMargins(0, 0, 0, 0)  # Убираем нижний отступ
         self.central_layout.setSpacing(0)
+
+        # Создаем контейнер для основного контента
+        content_container = QWidget()
+        content_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        content_layout = QVBoxLayout(content_container)
+        content_layout.setContentsMargins(0, 0, 0, 0)
+        content_layout.setSpacing(0)
 
         # Инициализируем UI
         self.ui = Ui_Form()
-        self.ui.setupUi(self.central_widget)
+        self.ui.setupUi(content_container)
 
         # Удаляем старую геометрию content
         self.ui.content.setGeometry(QRect())
         self.ui.content.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
-        # Добавляем content в центральный лейаут
-        self.central_layout.addWidget(self.ui.content)
+        # Добавляем content в контейнер контента
+        content_layout.addWidget(self.ui.content)
+
+        # Добавляем контейнер контента в центральный лейаут
+        self.central_layout.addWidget(content_container)
 
         # Настраиваем страницу списка
         self.ui.list_page.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
         # Создаем главный лейаут для страницы списка
         self.list_page_layout = QVBoxLayout(self.ui.list_page)
-        self.list_page_layout.setContentsMargins(40, 40, 40, 40)
-        self.list_page_layout.setSpacing(20)
+        self.list_page_layout.setContentsMargins(38, 38, 38, 38)
+        self.list_page_layout.setSpacing(10)  # Уменьшаем расстояние между элементами с 20 до 10 пикселей
 
         # Создаем верхний лейаут для заголовка и кнопок
         self.header_layout = QHBoxLayout()
         self.header_layout.setContentsMargins(0, 0, 0, 0)
         self.header_layout.setSpacing(10)
+        self.header_layout.setAlignment(Qt.AlignLeft)  # Устанавливаем выравнивание всего лейаута по левому краю
+        
+        # Настраиваем размеры заголовка списка
+        self.ui.list_text.setMinimumHeight(40)
+        self.ui.list_text.setMinimumWidth(200)
+        self.ui.list_text.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.ui.list_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.ui.list_text.setContentsMargins(0, 0, 0, 0)
+        self.ui.list_text.setStyleSheet("margin: 0; padding: 0;")  # Убираем все возможные отступы через стили
+        
+        # Создаем контейнер для заголовка
+        header_container = QWidget()
+        header_container.setContentsMargins(0, 0, 0, 0)
+        header_container_layout = QHBoxLayout(header_container)
+        header_container_layout.setContentsMargins(0, 0, 0, 0)
+        header_container_layout.setSpacing(0)
+        header_container_layout.addWidget(self.ui.list_text)
         
         # Добавляем элементы в header_layout
-        self.header_layout.addWidget(self.ui.list_text)
+        self.header_layout.addWidget(header_container)
+        self.header_layout.addStretch()
         self.header_layout.addWidget(self.ui.add_task_btn)
         self.header_layout.addWidget(self.ui.edit_list_btn)
-        self.header_layout.addStretch()
+        
+        # Устанавливаем выравнивание по вертикали для кнопок
+        self.ui.add_task_btn.setFixedHeight(self.ui.list_text.height())
+        self.ui.edit_list_btn.setFixedHeight(self.ui.list_text.height())
         
         # Добавляем header_layout в главный лейаут
         self.list_page_layout.addLayout(self.header_layout)
@@ -75,7 +106,9 @@ class MainWindow(QMainWindow):
         self.ui.tasks_scroll_area.setWidgetResizable(True)
         self.ui.tasks_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.ui.tasks_scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.ui.tasks_scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.tasks_scroll_area.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)  # Фиксированная ширина
+        self.ui.tasks_scroll_area.setFixedWidth(1000)  # Увеличиваем фиксированную ширину
+        self.ui.tasks_scroll_area.setMinimumHeight(0)
         
         # Создаем виджет для задач
         self.tasks_widget = QWidget()
@@ -86,13 +119,37 @@ class MainWindow(QMainWindow):
         self.tasks_layout = QVBoxLayout(self.tasks_widget)
         self.tasks_layout.setAlignment(Qt.AlignTop)
         self.tasks_layout.setSpacing(10)
-        self.tasks_layout.setContentsMargins(0, 0, 0, 0)
+        self.tasks_layout.setContentsMargins(0, 0, 0, 22)  # Добавляем нижний отступ 22px
         
         # Устанавливаем виджет задач в область прокрутки
         self.ui.tasks_scroll_area.setWidget(self.tasks_widget)
         
         # Добавляем область прокрутки в главный лейаут
         self.list_page_layout.addWidget(self.ui.tasks_scroll_area)
+
+        # Создаем контейнер для нижнего меню
+        bottom_menu_container = QWidget()
+        bottom_menu_container.setObjectName("bottom_menu_container")
+        bottom_menu_layout = QHBoxLayout(bottom_menu_container)
+        bottom_menu_layout.setContentsMargins(0, 0, 0, 0)
+        bottom_menu_layout.setSpacing(0)
+        bottom_menu_layout.setAlignment(Qt.AlignHCenter)
+        
+        # Настраиваем внутренний лейаут меню
+        self.ui.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.ui.horizontalLayout_2.setSpacing(5)  # Минимальное расстояние между кнопками
+        self.ui.horizontalLayout_2.setAlignment(Qt.AlignCenter)
+        
+        # Настраиваем кнопки меню
+        for button in [self.ui.pushButton_5, self.ui.pushButton_2, self.ui.pushButton_3]:
+            button.setFixedSize(50, 50)
+            button.setContentsMargins(0, 0, 0, 0)
+            button.setStyleSheet("margin: 0; padding: 0;")
+        
+        bottom_menu_layout.addWidget(self.ui.horizontalLayoutWidget_2)
+
+        # Добавляем контейнер с меню в центральный лейаут
+        self.central_layout.addWidget(bottom_menu_container)
 
         # Удаляем старые виджеты
         old_widgets = []
@@ -126,6 +183,11 @@ class MainWindow(QMainWindow):
         
         # Загружаем задачи при инициализации
         self.load_tasks_from_json()
+
+        # Устанавливаем текст для кнопок нижнего меню
+        self.ui.pushButton_5.setText("1")
+        self.ui.pushButton_2.setText("2")
+        self.ui.pushButton_3.setText("3")
 
         # Подключаем обработчик изменения размера окна
         self.resizeEvent = self.handle_resize
@@ -265,10 +327,12 @@ class MainWindow(QMainWindow):
                 tasks.append(item.widget())
         
         # Сортируем задачи в зависимости от выбранного типа
-        if sort_type == "по возрастанию":
+        if sort_type == "По возрастанию":
             tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()))
-        elif sort_type == "по убыванию":
+        elif sort_type == "По убыванию":
             tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()), reverse=True)
+        elif sort_type == "Все приоритеты":
+            tasks.sort(key=lambda x: self.get_date_value(x.top_info.text().split(' • ')[0].strip()))
         
         # Добавляем отсортированные задачи обратно в layout
         for task in tasks:
@@ -282,6 +346,20 @@ class MainWindow(QMainWindow):
             "Приоритет не задан": 0
         }
         return priority_map.get(priority_text, 0)
+
+    def get_date_value(self, date_text):
+        try:
+            # Преобразуем строку даты в объект QDate
+            day, month, year = map(int, date_text.split('.'))
+            task_date = QDate(year, month, day)
+            current_date = QDate.currentDate()
+            
+            # Возвращаем количество дней между текущей датой и датой задачи
+            # Используем abs() чтобы получить абсолютное значение разницы
+            return abs(current_date.daysTo(task_date))
+        except:
+            # В случае ошибки парсинга даты возвращаем максимальное значение
+            return float('inf')
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

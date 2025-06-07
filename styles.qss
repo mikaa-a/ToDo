@@ -134,11 +134,13 @@
 #tasks_scroll_area {
     border: none;
     background-color: transparent;
+    margin-bottom: 20px;
 }
 
 #tasks_scroll_area > QWidget > QWidget {
     background-color: transparent;
     border-radius: 12px;
+    padding-bottom: 20px;
 }
 
 #tasks_scroll_area QScrollBar:vertical {
@@ -619,9 +621,83 @@ QCalendarWidget QTableView::item {
 
 QCalendarWidget QTableView::item:selected {
     background-color: #6C946D;
-    color: #F3F2F3;
+    color: #B1CCBB;
 }
 
 QCalendarWidget QTableView::item:disabled {
     color: #B1CCBB;
+}
+
+#horizontalLayoutWidget_2 {
+    background-color: #B1CCBB;
+    min-height: 51px;
+    max-height: 51px;
+    min-width: 170px;
+    max-width: 170px;
+    border-radius: 8px 8px 0 0;
+    margin: 0 auto;
+    border: none;
+    padding: 0;
+}
+
+#horizontalLayout_2 {
+    spacing: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#pushButton_5, #pushButton_2, #pushButton_3 {
+    background-color: transparent;
+    border: none;
+    color: #F3F2F3;
+    font-size: 16px;
+    font-weight: 400;
+    min-width: 50px;
+    max-width: 50px;
+    min-height: 50px;
+    max-height: 50px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+#pushButton_5:hover, #pushButton_2:hover, #pushButton_3:hover {
+    color: #F3F2F3;
+    background-color: transparent;
+}
+
+#bottom_menu_container {
+    background-color: #F3F2F3;
+    min-height: 50px;
+    border: none;
+    margin: 0;
+    padding: 22 0;
+}
+
+#central_widget {
+    background-color: #F3F2F3;
+    border: none;
+}
+
+QMainWindow {
+    background-color: #F3F2F3;
+    border: none;
+}
+
+#content {
+    background-color: #F3F2F3;
+    border: none;
+    min-height: 0px;
+}
+
+#list_page {
+    background-color: #F3F2F3;
+    border: none;
+    min-height: 0px;
+    padding-bottom: 22px;
 }

@@ -132,7 +132,7 @@ class Ui_Form(object):
         self.pushButton_4.setGeometry(QRect(470, 620, 51, 41))
         self.horizontalLayoutWidget_2 = QWidget(self.central_widget)
         self.horizontalLayoutWidget_2.setObjectName(u"horizontalLayoutWidget_2")
-        self.horizontalLayoutWidget_2.setGeometry(QRect(380, 560, 151, 51))
+        self.horizontalLayoutWidget_2.setGeometry(QRect(0, 560, 240, 51))
         self.horizontalLayout_2 = QHBoxLayout(self.horizontalLayoutWidget_2)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)

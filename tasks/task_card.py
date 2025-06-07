@@ -21,27 +21,27 @@ class TaskCard(QWidget):
         self.container.setStyleSheet("""
             QFrame#task_card {
                 background-color: #B1CCBB;
-                border-radius: 12px;
-                padding: 12px;
-                min-width: 0;  /* Позволяет контейнеру сжиматься */
+                border-radius: 8px;
+                padding: 8px;
+                min-width: 0;
             }
         """)
         
         # Основной layout для контейнера
         self.main_layout = QVBoxLayout(self.container)
-        self.main_layout.setSpacing(10)
-        self.main_layout.setContentsMargins(10, 10, 10, 10)
+        self.main_layout.setSpacing(6)
+        self.main_layout.setContentsMargins(8, 8, 8, 8)
         self.main_layout.setSizeConstraint(QLayout.SetMinAndMaxSize)
 
         # Верхняя часть с названием, датой и приоритетом
         self.top_layout = QHBoxLayout()
         self.top_layout.setContentsMargins(0, 0, 0, 0)
-        self.top_layout.setSpacing(8)
+        self.top_layout.setSpacing(6)
         
         # Чекбокс и название задачи
         self.checkbox = QCheckBox()
         self.checkbox.setObjectName("task_checkbox")
-        self.checkbox.setFixedSize(24, 24)  # Фиксированный размер чекбокса
+        self.checkbox.setFixedSize(20, 20)  # Уменьшаем размер чекбокса
         self.checkbox.clicked.connect(self.handle_task_click)
         self.top_layout.addWidget(self.checkbox)
         
@@ -87,8 +87,8 @@ class TaskCard(QWidget):
         # Создаем контейнер для подзадач с прокруткой
         self.subtasks_scroll = QScrollArea()
         self.subtasks_scroll.setWidgetResizable(True)
-        self.subtasks_scroll.setMaximumHeight(150)  # Максимальная высота
-        self.subtasks_scroll.setMinimumHeight(0)    # Минимальная высота
+        self.subtasks_scroll.setMaximumHeight(120)  # Уменьшаем максимальную высоту
+        self.subtasks_scroll.setMinimumHeight(0)
         self.subtasks_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.subtasks_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.subtasks_scroll.setStyleSheet("""
@@ -117,10 +117,10 @@ class TaskCard(QWidget):
             
             # Вычисляем необходимую высоту для контейнера
             total_height = len(subtasks_list) * 30  # Примерная высота одной подзадачи
-            if total_height < 150:
+            if total_height < 120:
                 self.subtasks_scroll.setFixedHeight(total_height + 20)  # Добавляем отступы
             else:
-                self.subtasks_scroll.setFixedHeight(150)
+                self.subtasks_scroll.setFixedHeight(120)
                 
             for i, subtask in enumerate(subtasks_list, 1):
                 subtask_widget = QWidget()
@@ -171,7 +171,8 @@ class TaskCard(QWidget):
         # Кнопка редактирования
         self.edit_button = QPushButton("Редактировать")
         self.edit_button.setObjectName("edit_button")
-        self.edit_button.setFixedWidth(100)
+        self.edit_button.setFixedWidth(90)  # Уменьшаем ширину кнопки
+        self.edit_button.setFixedHeight(24)  # Уменьшаем высоту кнопки
         self.edit_button.clicked.connect(self.edit_task)
         self.main_layout.addWidget(self.edit_button, alignment=Qt.AlignRight)
 
