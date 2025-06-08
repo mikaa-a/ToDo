@@ -1,9 +1,10 @@
 import sys
 import json
-from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame, QMessageBox, QLayout, QComboBox
+from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame, QMessageBox, QLayout, QComboBox, QSpacerItem
 from PySide6.QtCore import QFile, Qt, QDate, QRect
 from ui_mainwindow import Ui_Form
 from dialogs.dialog import AddTaskDialog, EditListDialog
+from dialogs.add_list_dialog import AddListDialog
 from tasks.task_card import TaskCard
 from utils.helpers import load_stylesheet
 
@@ -12,59 +13,185 @@ class ListCard(QWidget):
         super().__init__(parent)
         self.list_index = list_index
         self.main_window_instance = main_window_instance
-        self.init_ui(list_name, uncompleted_task_count)
         
         # Устанавливаем политику размеров для карточки
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.setMinimumWidth(0)  # Позволяем карточке сжиматься
-
-    def init_ui(self, list_name, uncompleted_task_count):
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.setMinimumHeight(120)  # 100px + 4px отступ сверху + 4px отступ снизу + 8px внутренние отступы + 4px дополнительно
+        self.setMaximumHeight(120)
+        self.setMinimumWidth(0)
+        self.setMaximumWidth(16777215)  # Максимально возможная ширина
+        
+        # Основной layout для виджета
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+        
         # Создаем контейнер для стилей
         self.container = QFrame()
         self.container.setObjectName("list_card_frame")
-        self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.container.setMinimumWidth(0)  # Позволяем контейнеру сжиматься
+        self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.container.setMinimumWidth(0)
+        self.container.setMinimumHeight(120)
+        self.container.setMaximumHeight(120)
         
         # Основной layout для контейнера
-        self.main_layout = QHBoxLayout(self.container)
-        self.main_layout.setContentsMargins(20, 15, 20, 15)
-        self.main_layout.setSpacing(20)
+        container_layout = QHBoxLayout(self.container)
+        container_layout.setContentsMargins(12, 8, 12, 8)
+        container_layout.setSpacing(15)
         
-        # Создаем вертикальный layout для текста (перемещаем его выше)
+        # Создаем вертикальный layout для текста
         text_layout = QVBoxLayout()
-        text_layout.setSpacing(5)
+        text_layout.setSpacing(4)
+        text_layout.setAlignment(Qt.AlignVCenter)
         
         # Добавляем название списка
         name_label = QLabel(list_name)
         name_label.setObjectName("list_name")
+        name_label.setWordWrap(True)
+        name_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        name_label.setMinimumWidth(0)
+        name_label.setMaximumWidth(16777215)
         text_layout.addWidget(name_label)
         
         # Добавляем количество невыполненных задач
         count_text = f"{uncompleted_task_count} {'невыполненная задача' if uncompleted_task_count == 1 else 'невыполненных задачи' if 1 < uncompleted_task_count < 5 else 'невыполненных задач'}"
         count_label = QLabel(count_text)
         count_label.setObjectName("list_task_count")
+        count_label.setWordWrap(True)
+        count_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        count_label.setMinimumWidth(0)
+        count_label.setMaximumWidth(16777215)
         text_layout.addWidget(count_label)
         
-        self.main_layout.addLayout(text_layout) # Добавляем текстовый layout в основной
-        self.main_layout.addStretch()
+        container_layout.addLayout(text_layout)
+        container_layout.addStretch()
         
         # Устанавливаем курсор в виде руки при наведении
         self.setCursor(Qt.PointingHandCursor)
+        
+        # Добавляем контейнер в основной layout
+        main_layout.addWidget(self.container)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            # Вызываем метод open_list у экземпляра MainWindow
+            self.main_window_instance.open_list(self)
+
+class FocusTaskCard(QWidget):
+    def __init__(self, task_name, date, priority, list_name, sub_tasks, parent=None):
+        super().__init__(parent)
+        self.init_ui(task_name, date, priority, list_name, sub_tasks)
+        
+        # Устанавливаем политику размеров для карточки
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.setMinimumWidth(0)
+        
+        # Создаем контейнер для стилей
+        self.container = QFrame()
+        self.container.setObjectName("focus_task_card")
+        self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.container.setMinimumWidth(0)
+        
+        # Основной layout для контейнера
+        self.main_layout = QVBoxLayout(self.container)
+        self.main_layout.setSpacing(8)
+        self.main_layout.setContentsMargins(16, 16, 16, 16)
+
+        # Верхняя часть с информацией о задаче
+        self.top_layout = QHBoxLayout()
+        self.top_layout.setContentsMargins(0, 0, 0, 0)
+        self.top_layout.setSpacing(8)
+        
+        # Левая часть с названием задачи
+        self.task_name = QLabel(task_name)
+        self.task_name.setObjectName("focus_task_name")
+        self.task_name.setWordWrap(True)
+        self.task_name.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.top_layout.addWidget(self.task_name)
+        
+        # Правая часть с информацией
+        info_text = f"{self.format_date(date)} • {list_name} • {self.get_priority_text(priority)}"
+        self.top_info = QLabel(info_text)
+        self.top_info.setObjectName("focus_task_info")
+        self.top_info.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.top_info.setAlignment(Qt.AlignRight | Qt.AlignTop)
+        self.top_layout.addWidget(self.top_info)
+        
+        self.main_layout.addLayout(self.top_layout)
+
+        # Подзадачи
+        if sub_tasks:
+            subtasks_list = [subtask.strip() for subtask in sub_tasks.split(';') if subtask.strip()]
+            if subtasks_list:
+                self.subtasks_container = QWidget()
+                self.subtasks_container.setObjectName("focus_subtasks_container")
+                self.subtasks_layout = QVBoxLayout(self.subtasks_container)
+                self.subtasks_layout.setSpacing(4)
+                self.subtasks_layout.setContentsMargins(0, 0, 0, 0)
+                
+                for subtask in subtasks_list:
+                    subtask_widget = QWidget()
+                    subtask_layout = QHBoxLayout(subtask_widget)
+                    subtask_layout.setContentsMargins(0, 0, 0, 0)
+                    subtask_layout.setSpacing(8)
+                    
+                    # Добавляем точку
+                    dot_label = QLabel("•")
+                    dot_label.setObjectName("focus_subtask_dot")
+                    dot_label.setFixedWidth(12)
+                    subtask_layout.addWidget(dot_label)
+                    
+                    # Добавляем текст подзадачи
+                    label = QLabel(subtask)
+                    label.setObjectName("focus_subtask_text")
+                    label.setWordWrap(True)
+                    subtask_layout.addWidget(label)
+                    
+                    self.subtasks_layout.addWidget(subtask_widget)
+                
+                self.main_layout.addWidget(self.subtasks_container)
 
         # Устанавливаем layout для основного виджета
         layout = QVBoxLayout(self)
         layout.addWidget(self.container)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSizeConstraint(QLayout.SetMinAndMaxSize)
+
+    def get_priority_text(self, priority: int):
+        match priority:
+            case 1:
+                return "Низкий приоритет"
+            case 2:
+                return "Средний приоритет"
+            case 3:
+                return "Высокий приоритет"
+            case 0:
+                return "Приоритет не задан"
+            case _:
+                return "Приоритет не задан"
+
+    def format_date(self, date_str: str) -> str:
+        if not date_str:
+            return "Дата не задана"
         
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            # Вызываем метод open_list у экземпляра MainWindow
-            self.main_window_instance.open_list(self)
+        try:
+            date = QDate.fromString(date_str, "ddd, d MMMM yyyy")
+            if not date.isValid():
+                return "Дата не задана"
+                
+            months = {
+                1: "января", 2: "февраля", 3: "марта", 4: "апреля",
+                5: "мая", 6: "июня", 7: "июля", 8: "августа",
+                9: "сентября", 10: "октября", 11: "ноября", 12: "декабря"
+            }
+            return f"{date.day()} {months[date.month()]} {date.year()}"
+        except Exception as e:
+            print(f"Ошибка при форматировании даты: {e}")
+            return "Дата не задана"
 
 class MainWindow(QMainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
 
         self.setMinimumSize(1000, 600)
 
@@ -74,7 +201,7 @@ class MainWindow(QMainWindow):
 
         # Создаем главный лейаут для центрального виджета
         self.central_layout = QVBoxLayout(self.central_widget)
-        self.central_layout.setContentsMargins(0, 0, 0, 0)  # Убираем нижний отступ
+        self.central_layout.setContentsMargins(0, 0, 0, 0)
         self.central_layout.setSpacing(0)
 
         # Создаем контейнер для основного контента
@@ -99,6 +226,88 @@ class MainWindow(QMainWindow):
         # Добавляем контейнер контента в центральный лейаут
         self.central_layout.addWidget(content_container)
 
+        # Создаем контейнер для меню
+        self.menu_container = QWidget()
+        self.menu_container.setObjectName("menu_container")
+        self.menu_container.setFixedHeight(51)
+        self.menu_container.setFixedWidth(200)
+        self.menu_container.setStyleSheet("""
+            QWidget#menu_container {
+                background-color: #B1CCBB;
+                border-radius: 12px;
+                margin: 0 auto;
+            }
+        """)
+        
+        # Создаем лейаут для меню
+        menu_layout = QHBoxLayout(self.menu_container)
+        menu_layout.setContentsMargins(10, 0, 10, 0)
+        menu_layout.setSpacing(5)
+        menu_layout.setAlignment(Qt.AlignCenter)
+        
+        # Настраиваем кнопки меню
+        for button in [self.ui.all_task_btn, self.ui.all_lists_btn, self.ui.focus_mode_btn]:
+            button.setFixedSize(40, 40)
+            button.setContentsMargins(0, 0, 0, 0)
+            button.setStyleSheet("""
+                QPushButton {
+                    border: none;
+                    background-color: transparent;
+                    font-size: 18px;
+                    color: #F3F2F3;
+                    border-radius: 8px;
+                }
+            """)
+            menu_layout.addWidget(button)
+        
+        # Создаем контейнер для центрирования меню в безопасной зоне
+        menu_wrapper = QWidget()
+        menu_wrapper.setObjectName("menu_wrapper")
+        menu_wrapper_layout = QVBoxLayout(menu_wrapper)
+        menu_wrapper_layout.setContentsMargins(0, 0, 0, 0)
+        menu_wrapper_layout.setSpacing(0)
+        
+        # Создаем три равных пространства для вертикального распределения
+        top_spacer = QWidget()
+        top_spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        top_spacer.setMinimumHeight(0)
+        
+        middle_container = QWidget()
+        middle_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        middle_layout = QVBoxLayout(middle_container)
+        middle_layout.setContentsMargins(0, 0, 0, 0)
+        middle_layout.setSpacing(0)
+        
+        # Создаем горизонтальный контейнер для центрирования меню
+        menu_center_container = QWidget()
+        menu_center_layout = QHBoxLayout(menu_center_container)
+        menu_center_layout.setContentsMargins(0, 0, 0, 0)
+        menu_center_layout.setSpacing(0)
+        
+        # Добавляем растягивающийся элемент слева
+        menu_center_layout.addStretch()
+        
+        # Добавляем меню
+        menu_center_layout.addWidget(self.menu_container)
+        
+        # Добавляем растягивающийся элемент справа
+        menu_center_layout.addStretch()
+        
+        # Добавляем меню в средний контейнер
+        middle_layout.addWidget(menu_center_container)
+        
+        bottom_spacer = QWidget()
+        bottom_spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        bottom_spacer.setMinimumHeight(0)
+        
+        # Добавляем все элементы в основной layout с равными пропорциями
+        menu_wrapper_layout.addWidget(top_spacer, 1)
+        menu_wrapper_layout.addWidget(middle_container, 1)
+        menu_wrapper_layout.addWidget(bottom_spacer, 1)
+        
+        # Добавляем обертку меню в центральный лейаут
+        self.central_layout.addWidget(menu_wrapper)
+
         # Настраиваем страницу списка
         self.ui.list_page.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
@@ -106,7 +315,72 @@ class MainWindow(QMainWindow):
         self.ui.my_lists.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.ui.lists_scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.ui.tasks_container_3.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.tasks_container_3.setMinimumWidth(0)
         
+        # Настраиваем страницу "Режим фокусировки"
+        self.ui.focus_page.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.focus_page.setMinimumHeight(400)
+        
+        # Сначала удаляем все дочерние виджеты со страницы фокусировки
+        for child in self.ui.focus_page.findChildren(QWidget):
+            if child != self.ui.focus_mode:  # Сохраняем только заголовок
+                child.setParent(None)
+                child.deleteLater()
+        
+        # Удаляем старый макет, если он существует
+        if self.ui.focus_page.layout():
+            old_layout = self.ui.focus_page.layout()
+            while old_layout.count():
+                item = old_layout.takeAt(0)
+                if item.widget():
+                    item.widget().setParent(None)
+                    item.widget().deleteLater()
+            QWidget().setLayout(old_layout)
+        
+        # Создаем макет для страницы фокусировки
+        self.focus_page_layout = QVBoxLayout()
+        self.focus_page_layout.setContentsMargins(38, 38, 38, 38)
+        self.focus_page_layout.setSpacing(10)
+        self.focus_page_layout.setAlignment(Qt.AlignTop)
+        
+        # Добавляем заголовок (если он еще не добавлен)
+        if not self.ui.focus_mode.parent():
+            self.ui.focus_mode.setObjectName("focus_mode")
+            self.ui.focus_mode.setStyleSheet("font-size: 24px; font-weight: 500; color: #333333;")
+            self.focus_page_layout.addWidget(self.ui.focus_mode)
+        
+        # Настраиваем область прокрутки
+        self.ui.tasks_scroll_area_2 = QScrollArea(self.ui.focus_page)
+        self.ui.tasks_scroll_area_2.setObjectName("tasks_scroll_area_2")
+        self.ui.tasks_scroll_area_2.setWidgetResizable(True)
+        self.ui.tasks_scroll_area_2.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.ui.tasks_scroll_area_2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.ui.tasks_scroll_area_2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.tasks_scroll_area_2.setMinimumWidth(600)
+        self.ui.tasks_scroll_area_2.setMinimumHeight(0)
+        self.ui.tasks_scroll_area_2.setStyleSheet("QScrollArea { background-color: #F3F2F3; border: none; }")
+        
+        # Создаем виджет для задач
+        self.focus_tasks_widget = QWidget()
+        self.focus_tasks_widget.setObjectName("focus_tasks_widget")
+        self.focus_tasks_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.focus_tasks_widget.setStyleSheet("background-color: #F3F2F3; border: none;")
+        
+        # Создаем лейаут для задач
+        self.focus_tasks_layout = QVBoxLayout(self.focus_tasks_widget)
+        self.focus_tasks_layout.setAlignment(Qt.AlignTop)
+        self.focus_tasks_layout.setSpacing(10)
+        self.focus_tasks_layout.setContentsMargins(0, 0, 0, 72)
+        
+        # Устанавливаем виджет задач в область прокрутки
+        self.ui.tasks_scroll_area_2.setWidget(self.focus_tasks_widget)
+        
+        # Добавляем область прокрутки в макет страницы
+        self.focus_page_layout.addWidget(self.ui.tasks_scroll_area_2)
+        
+        # Устанавливаем макет для страницы фокусировки
+        self.ui.focus_page.setLayout(self.focus_page_layout)
+
         # Создаем главный лейаут для страницы списка
         self.list_page_layout = QVBoxLayout(self.ui.list_page)
         self.list_page_layout.setContentsMargins(38, 38, 38, 38)
@@ -137,7 +411,15 @@ class MainWindow(QMainWindow):
         # Добавляем элементы в header_layout
         self.header_layout.addWidget(header_container)
         self.header_layout.addStretch()
+        
         self.header_layout.addWidget(self.ui.add_task_btn)
+        
+        # Добавляем точку-разделитель между кнопками
+        dot_label = QLabel("•")
+        dot_label.setObjectName("header_dot")
+        dot_label.setStyleSheet("color: #666666; font-size: 16px; margin: 0 8px;")
+        self.header_layout.addWidget(dot_label)
+        
         self.header_layout.addWidget(self.ui.edit_list_btn)
         
         # Устанавливаем выравнивание по вертикали для кнопок
@@ -196,30 +478,6 @@ class MainWindow(QMainWindow):
         
         # Добавляем область прокрутки в главный лейаут
         self.list_page_layout.addWidget(self.ui.tasks_scroll_area)
-
-        # Создаем контейнер для нижнего меню
-        bottom_menu_container = QWidget()
-        bottom_menu_container.setObjectName("bottom_menu_container")
-        bottom_menu_layout = QHBoxLayout(bottom_menu_container)
-        bottom_menu_layout.setContentsMargins(0, 0, 0, 0)
-        bottom_menu_layout.setSpacing(0)
-        bottom_menu_layout.setAlignment(Qt.AlignHCenter)
-        
-        # Настраиваем внутренний лейаут меню
-        self.ui.top_bar_layout.setContentsMargins(0, 0, 0, 0)
-        self.ui.top_bar_layout.setSpacing(5)  # Минимальное расстояние между кнопками
-        self.ui.top_bar_layout.setAlignment(Qt.AlignCenter)
-        
-        # Настраиваем кнопки меню
-        for button in [self.ui.all_task_btn, self.ui.all_lists_btn, self.ui.focus_mode_btn]:
-            button.setFixedSize(50, 50)
-            button.setContentsMargins(0, 0, 0, 0)
-            button.setStyleSheet("margin: 0; padding: 0;")
-        
-        bottom_menu_layout.addWidget(self.ui.horizontalLayoutWidget_2)
-
-        # Добавляем контейнер с меню в центральный лейаут
-        self.central_layout.addWidget(bottom_menu_container)
 
         # Удаляем старые виджеты
         old_widgets = []
@@ -284,9 +542,93 @@ class MainWindow(QMainWindow):
         # Настраиваем корневой макет для страницы "Мои списки"
         self.my_lists_layout = QVBoxLayout(self.ui.my_lists)
         self.my_lists_layout.setContentsMargins(38, 38, 38, 38)
-        self.my_lists_layout.setSpacing(10)
+        self.my_lists_layout.setSpacing(10)  # Уменьшаем отступ с 20 до 10 пикселей
+
+        # Настраиваем заголовок
+        self.ui.horizontalLayoutWidget_3.setContentsMargins(0, 0, 0, 0)
+        self.ui.horizontalLayoutWidget_3.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.ui.Layout_my_lists.setContentsMargins(0, 0, 0, 0)
+        self.ui.Layout_my_lists.setSpacing(10)
+        
+        # Создаем горизонтальный макет для заголовка и кнопки
+        header_layout = QHBoxLayout()
+        header_layout.setContentsMargins(0, 0, 0, 0)
+        header_layout.setSpacing(10)
+        
+        # Добавляем заголовок в левую часть
+        header_layout.addWidget(self.ui.my_lists_text_2)
+        
+        # Добавляем растягивающийся элемент
+        header_layout.addStretch()
+        
+        # Добавляем кнопку в правую часть
+        header_layout.addWidget(self.ui.add_list)
+        
+        # Очищаем старый макет и добавляем новый
+        while self.ui.Layout_my_lists.count():
+            item = self.ui.Layout_my_lists.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+        
+        # Добавляем новый макет в основной контейнер
+        header_widget = QWidget()
+        header_widget.setLayout(header_layout)
+        self.ui.Layout_my_lists.addWidget(header_widget)
+        self.ui.Layout_my_lists.setAlignment(Qt.AlignTop)
+
+        # Настраиваем область прокрутки списков
+        self.ui.lists_scroll_area.setWidgetResizable(True)
+        self.ui.lists_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.ui.lists_scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.ui.lists_scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.lists_scroll_area.setMinimumWidth(600)
+
+        # Добавляем виджеты в макет с отступами
         self.my_lists_layout.addWidget(self.ui.horizontalLayoutWidget_3)
+        self.my_lists_layout.addSpacing(10)  # Отступ между заголовком и списками
         self.my_lists_layout.addWidget(self.ui.lists_scroll_area)
+
+        # Настраиваем макет для страницы "Режим фокусировки"
+        self.ui.focus_page_layout = QVBoxLayout(self.ui.focus_page)
+        self.ui.focus_page_layout.setContentsMargins(38, 38, 38, 38)
+        self.ui.focus_page_layout.setSpacing(10)
+        self.ui.focus_page_layout.setAlignment(Qt.AlignTop)
+
+        # Добавляем заголовок в макет
+        self.ui.focus_mode.setObjectName("focus_mode")
+        self.ui.focus_mode.setStyleSheet("font-size: 24px; font-weight: 500; color: #333333;")
+        self.ui.focus_page_layout.addWidget(self.ui.focus_mode)
+
+        # Удаляем ненужный виджет task_selection
+        if hasattr(self.ui, 'task_selection'):
+            self.ui.task_selection.deleteLater()
+            self.ui.task_selection = None
+
+        # Настраиваем область прокрутки для режима фокусировки
+        self.ui.tasks_scroll_area_2.setWidgetResizable(True)
+        self.ui.tasks_scroll_area_2.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.ui.tasks_scroll_area_2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.ui.tasks_scroll_area_2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.tasks_scroll_area_2.setMinimumWidth(600)
+        self.ui.tasks_scroll_area_2.setMinimumHeight(0)
+
+        # Создаем виджет для задач в режиме фокусировки
+        self.focus_tasks_widget = QWidget()
+        self.focus_tasks_widget.setObjectName("focus_tasks_widget")
+        self.focus_tasks_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.focus_tasks_widget.setStyleSheet("background-color: #F3F2F3; border: none;")
+
+        # Создаем лейаут для задач в режиме фокусировки
+        self.focus_tasks_layout = QVBoxLayout(self.focus_tasks_widget)
+        self.focus_tasks_layout.setAlignment(Qt.AlignTop)
+        self.focus_tasks_layout.setSpacing(10)
+        self.focus_tasks_layout.setContentsMargins(0, 0, 0, 72)  # Добавляем нижний отступ для меню
+
+        # Устанавливаем виджет задач в область прокрутки
+        self.ui.tasks_scroll_area_2.setWidget(self.focus_tasks_widget)
+
+        # Добавляем область прокрутки в макет страницы фокусировки
+        self.ui.focus_page_layout.addWidget(self.ui.tasks_scroll_area_2)
 
         # Создаем лейаут для всех задач
         self.all_tasks_layout = QVBoxLayout(self.ui.tasks_container_4)
@@ -388,6 +730,29 @@ class MainWindow(QMainWindow):
         
         # Очищаем ссылку на старый контейнер
         self.ui.tasks_container_4 = None
+
+        # Подключаем обработчик для кнопки добавления списка
+        self.ui.add_list.clicked.connect(self.show_add_list_dialog)
+
+        # Настраиваем страницу "Мои списки"
+        self.ui.my_lists.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
+        # Настраиваем существующий контейнер для списков
+        self.ui.tasks_container_3.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.tasks_container_3.setContentsMargins(0, 0, 0, 0)
+
+        # Настраиваем лейаут для списков
+        self.ui.tasks_layout_3.setContentsMargins(0, 10, 0, 10)  # Добавляем отступы сверху и снизу
+        self.ui.tasks_layout_3.setSpacing(10)
+        self.ui.tasks_layout_3.setAlignment(Qt.AlignTop)
+
+        # Удаляем старый виджет с отрицательным отступом
+        if hasattr(self.ui, 'verticalLayoutWidget_3'):
+            self.ui.verticalLayoutWidget_3.deleteLater()
+            self.ui.verticalLayoutWidget_3 = None
+
+        # Устанавливаем лейаут напрямую в контейнер
+        self.ui.tasks_container_3.setLayout(self.ui.tasks_layout_3)
 
     def handle_resize(self, event):
         # Обновляем размеры при изменении размера окна
@@ -568,6 +933,70 @@ class MainWindow(QMainWindow):
 
     def show_focus_page(self):
         self.stacked_widget.setCurrentIndex(2)  # Переключаем на focus_page
+        self.load_focus_tasks()  # Загружаем все задачи в режим фокусировки
+
+    def load_focus_tasks(self):
+        # Очищаем текущий layout
+        while self.focus_tasks_layout.count():
+            item = self.focus_tasks_layout.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+        
+        try:
+            with open('data.json', 'r', encoding='utf-8') as file:
+                data = json.load(file)
+                
+                # Создаем список для всех задач
+                all_tasks = []
+                
+                for list_item in data:
+                    list_name = list_item['list_name']
+                    for task in list_item['tasks']:
+                        if not task['task_is_done']:  # Показываем только невыполненные задачи
+                            # Форматируем подзадачи в строку
+                            subtasks_text = ""
+                            if task['task_subtasks']:
+                                subtasks_text = "; ".join([subtask['subtask_name'] for subtask in task['task_subtasks']])
+                            
+                            # Создаем карточку задачи для режима фокусировки
+                            task_card = FocusTaskCard(
+                                task_name=task['task_name'],
+                                date=task['task_due_date'],
+                                priority=task['task_priority'],
+                                list_name=list_name,
+                                sub_tasks=subtasks_text,
+                                parent=self.focus_tasks_widget  # Устанавливаем правильного родителя
+                            )
+                            
+                            # Добавляем задачу в список вместе с информацией для сортировки
+                            all_tasks.append({
+                                'card': task_card,
+                                'priority': task['task_priority'],
+                                'date': task['task_due_date']
+                            })
+                
+                # Сортируем задачи по приоритету (по убыванию) и дате (по возрастанию)
+                def sort_key(task_info):
+                    priority = task_info['priority']
+                    date_str = task_info['date']
+                    try:
+                        date = QDate.fromString(date_str, "ddd, d MMMM yyyy")
+                        if date.isValid():
+                            days_to_date = QDate.currentDate().daysTo(date)
+                            return (-priority, days_to_date)
+                    except:
+                        pass
+                    return (-priority, float('inf'))
+                
+                # Сортируем задачи
+                sorted_tasks = sorted(all_tasks, key=sort_key)
+                
+                # Добавляем отсортированные задачи в layout
+                for task_info in sorted_tasks:
+                    self.focus_tasks_layout.addWidget(task_info['card'])
+                    
+        except Exception as e:
+            print(f"Ошибка при загрузке задач в режиме фокусировки: {e}")
 
     def sort_all_tasks(self):
         # Получаем текущий выбор из комбо бокса
@@ -671,8 +1100,8 @@ class MainWindow(QMainWindow):
                         list_item['list_name'],
                         uncompleted_task_count,
                         data.index(list_item),
-                        self, # Передаем экземпляр MainWindow
-                        self.ui.tasks_container_3 # Родительский виджет для иерархии
+                        self,
+                        self.ui.tasks_container_3
                     )
                     
                     # Добавляем карточку в layout
@@ -811,6 +1240,37 @@ class MainWindow(QMainWindow):
                     
         except Exception as e:
             print(f"Ошибка при загрузке всех задач: {e}")
+
+    def show_add_list_dialog(self):
+        dialog = AddListDialog(self)
+        if dialog.exec() == QDialog.Accepted:
+            new_list_name = dialog.get_list_name()
+            
+            try:
+                # Читаем текущие данные
+                with open('data.json', 'r', encoding='utf-8') as file:
+                    data = json.load(file)
+                
+                # Создаем новый список
+                new_list = {
+                    "list_name": new_list_name,
+                    "id": len(data) + 1,
+                    "tasks": []
+                }
+                
+                # Добавляем новый список в данные
+                data.append(new_list)
+                
+                # Сохраняем обновленные данные
+                with open('data.json', 'w', encoding='utf-8') as file:
+                    json.dump(data, file, ensure_ascii=False, indent=4)
+                
+                # Обновляем отображение списков
+                self.load_lists()
+                
+            except Exception as e:
+                print(f"Ошибка при добавлении списка: {e}")
+                QMessageBox.critical(self, "Ошибка", "Не удалось добавить список")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

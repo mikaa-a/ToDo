@@ -77,11 +77,6 @@
                 "task_is_done": false,
                 "task_subtasks": [
                     {
-                        "id": 6,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
                         "id": 7,
                         "subtask_name": "ту",
                         "is_completed": false
@@ -225,6 +220,11 @@
                         "id": 5,
                         "subtask_name": "ту",
                         "is_completed": false
+                    },
+                    {
+                        "id": 6,
+                        "subtask_name": "ту",
+                        "is_completed": true
                     }
                 ]
             },
@@ -279,6 +279,30 @@
             {
                 "id": 7,
                 "task_name": "новая задача",
+                "task_description": "",
+                "task_priority": 0,
+                "task_due_date": "Sun, 8 June 2025",
+                "task_is_done": false,
+                "task_subtasks": []
+            },
+            {
+                "id": 8,
+                "task_name": "доклад",
+                "task_description": "",
+                "task_priority": 2,
+                "task_due_date": "Sun, 8 June 2025",
+                "task_is_done": false,
+                "task_subtasks": []
+            }
+        ]
+    },
+    {
+        "list_name": "работа",
+        "id": 2,
+        "tasks": [
+            {
+                "id": 1,
+                "task_name": "реферат",
                 "task_description": "",
                 "task_priority": 0,
                 "task_due_date": "Sun, 8 June 2025",
