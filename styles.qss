@@ -159,6 +159,14 @@
     text-align: left;
 }
 
+#back_to_list_btn:hover {
+    color: #6C946D;
+}
+
+#back_to_list_btn:pressed {
+    color: #4A7C5B;
+}
+
 #tasks_scroll_area, #tasks_scroll_area_2, #all_tasks_scroll_area, #lists_scroll_area {
     border: none;
     background-color: #F3F2F3;
