@@ -25,6 +25,35 @@ class TaskCard(QWidget):
                 padding: 12px;
                 min-width: 0;  /* Позволяет контейнеру сжиматься */
             }
+            QLabel#task_name, QLabel#task_description, QLabel#description_label, QLabel#subtasks_label, QLabel#task_top_info {
+                background-color: transparent;
+            }
+            QPushButton#edit_button {
+                background-color: #6C946D;
+                border: none;
+                border-radius: 8px;
+                color: #F3F2F3;
+                font-size: 16px;
+                font-weight: 400;
+                padding: 4px 12px;
+                min-width: 120px;
+                max-width: 120px;
+                min-height: 32px;
+                max-height: 32px;
+            }
+            QPushButton#edit_button:hover {
+                background-color: #8AB38B;
+            }
+            QPushButton#edit_button:pressed {
+                background-color: #4A7C5B;
+                color: #F3F2F3;
+            }
+            QCheckBox#task_checkbox {
+                background-color: transparent;
+            }
+            QWidget#checkbox_container {
+                background-color: transparent;
+            }
         """)
         
         # Основной layout для контейнера
@@ -45,6 +74,7 @@ class TaskCard(QWidget):
         self.checkbox.setContentsMargins(0, 0, 0, 0)  # Убираем отступы чекбокса
         self.checkbox.clicked.connect(self.handle_task_click)
         checkbox_container = QWidget()
+        checkbox_container.setObjectName("checkbox_container")
         checkbox_container.setFixedSize(38, 38)  # Оставляем увеличенный размер контейнера
         checkbox_layout = QHBoxLayout(checkbox_container)
         checkbox_layout.setContentsMargins(8, 8, 8, 8)  # Возвращаем прежние отступы
@@ -97,7 +127,7 @@ class TaskCard(QWidget):
         self.subtasks_scroll.setMaximumHeight(120)  # Уменьшаем максимальную высоту
         self.subtasks_scroll.setMinimumHeight(0)
         self.subtasks_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.subtasks_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.subtasks_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # Отключаем вертикальную прокрутку
         self.subtasks_scroll.setStyleSheet("""
             QScrollArea {
                 border: none;
@@ -111,6 +141,9 @@ class TaskCard(QWidget):
                 background-color: #B1CCBB;
                 border-radius: 8px;
             }
+            QLabel {
+                background-color: transparent;
+            }
         """)
         self.subtasks_layout = QVBoxLayout(self.subtasks_container)
         self.subtasks_layout.setSpacing(5)
@@ -123,15 +156,12 @@ class TaskCard(QWidget):
             subtasks_list = [subtask.strip() for subtask in sub_tasks.split(';') if subtask.strip()]
             
             # Вычисляем необходимую высоту для контейнера
-            total_height = len(subtasks_list) * 30  # Примерная высота одной подзадачи
-            if total_height < 120:
-                self.subtasks_scroll.setFixedHeight(total_height + 20)  # Добавляем отступы
-            else:
-                self.subtasks_scroll.setFixedHeight(120)
+            total_height = len(subtasks_list) * 32  # Высота одной подзадачи (32px)
+            self.subtasks_scroll.setFixedHeight(total_height + 20)  # Добавляем отступы
                 
             for i, subtask in enumerate(subtasks_list, 1):
                 subtask_widget = QWidget()
-                subtask_widget.setFixedHeight(32)  # Увеличиваем высоту контейнера
+                subtask_widget.setFixedHeight(32)  # Фиксированная высота контейнера
                 subtask_layout = QHBoxLayout(subtask_widget)
                 subtask_layout.setContentsMargins(0, 0, 0, 0)
                 subtask_layout.setSpacing(8)
@@ -148,8 +178,6 @@ class TaskCard(QWidget):
         # Кнопка редактирования
         self.edit_button = QPushButton("Редактировать")
         self.edit_button.setObjectName("edit_button")
-        self.edit_button.setFixedWidth(120)  # Увеличиваем ширину кнопки
-        self.edit_button.setFixedHeight(32)  # Увеличиваем высоту кнопки
         self.edit_button.clicked.connect(self.edit_task)
         self.main_layout.addWidget(self.edit_button, alignment=Qt.AlignRight)
 
@@ -298,6 +326,11 @@ class TaskCard(QWidget):
             self.parent.tasks_layout.removeWidget(self)
             self.parent.tasks_layout.addWidget(self)
             
+            # Перемещаем задачу в конец списка всех задач
+            if hasattr(self.parent, 'all_tasks_layout'):
+                self.parent.all_tasks_layout.removeWidget(self)
+                self.parent.all_tasks_layout.addWidget(self)
+            
             # Отмечаем все подзадачи как выполненные
             for i in range(self.subtasks_layout.count()):
                 widget = self.subtasks_layout.itemAt(i).widget()
@@ -312,6 +345,11 @@ class TaskCard(QWidget):
             # Перемещаем виджет в начало списка
             self.parent.tasks_layout.removeWidget(self)
             self.parent.tasks_layout.insertWidget(0, self)
+            
+            # Перемещаем задачу в начало списка всех задач
+            if hasattr(self.parent, 'all_tasks_layout'):
+                self.parent.all_tasks_layout.removeWidget(self)
+                self.parent.all_tasks_layout.insertWidget(0, self)
             
             # Снимаем отметки со всех подзадач
             for i in range(self.subtasks_layout.count()):

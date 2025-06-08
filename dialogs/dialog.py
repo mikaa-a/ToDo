@@ -1,59 +1,88 @@
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QTextEdit, QHBoxLayout, QRadioButton, QButtonGroup, QLabel, QDateEdit, QMessageBox, QPushButton
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QTextEdit, QHBoxLayout, QRadioButton, QButtonGroup, QLabel, QDateEdit, QMessageBox, QPushButton, QComboBox
 from PySide6.QtCore import Qt, QDate, QLocale
+import json
 
 class AddTaskDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, from_all_tasks=False):
         super().__init__(parent)
+        self.from_all_tasks = from_all_tasks
         self.setWindowTitle("Добавить задачу")
-        self.setFixedSize(500, 600)
+
+        self.setMinimumSize(500, 600)
         self.init_ui()
 
     def init_ui(self):
         layout = QVBoxLayout()
+        layout.setSpacing(15)  # Увеличиваем расстояние между элементами
+        layout.setContentsMargins(20, 20, 20, 20)  # Добавляем отступы
         self.setLayout(layout)
+
+        # Добавляем выбор списка, если диалог открыт из "Все задачи"
+        if self.from_all_tasks:
+            list_label = QLabel("Выберите список:")
+            list_label.setObjectName("dialog_label")
+            layout.addWidget(list_label)
+            
+            self.list_select = QComboBox()
+            self.list_select.setObjectName("priority_sort_select")
+            self.list_select.setMinimumHeight(40)  # Увеличиваем высоту комбо бокса
+            try:
+                with open('data.json', 'r', encoding='utf-8') as file:
+                    data = json.load(file)
+                    for list_item in data:
+                        self.list_select.addItem(list_item['list_name'])
+            except Exception as e:
+                print(f"Ошибка при загрузке списков: {e}")
+            layout.addWidget(self.list_select)
 
         # Название задачи
         name_label = QLabel("Название задачи:")
+        name_label.setObjectName("dialog_label")
         layout.addWidget(name_label)
         
         self.task_name_input = QLineEdit()
         self.task_name_input.setPlaceholderText("Введите название задачи")
+        self.task_name_input.setMinimumHeight(40)  # Увеличиваем высоту поля ввода
         layout.addWidget(self.task_name_input)
 
-        # Срок выполнения
-        date_label = QLabel("Срок выполнения:")
+        # Описание
+        description_label = QLabel("Описание:")
+        description_label.setObjectName("dialog_label")
+        layout.addWidget(description_label)
+        
+        self.task_description_input = QTextEdit()
+        self.task_description_input.setPlaceholderText("Введите описание задачи")
+        self.task_description_input.setMinimumHeight(120)  # Увеличиваем высоту поля описания
+        layout.addWidget(self.task_description_input)
+
+        # Дата выполнения
+        date_label = QLabel("Дата выполнения:")
+        date_label.setObjectName("dialog_label")
         layout.addWidget(date_label)
         
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)
         self.date_edit.setDate(QDate.currentDate())
-        self.date_edit.setDisplayFormat("ddd, d MMMM yyyy")
-        self.date_edit.setLocale(QLocale(QLocale.Russian))
+        self.date_edit.setMinimumHeight(40)  # Увеличиваем высоту поля даты
         layout.addWidget(self.date_edit)
-
-        # Описание задачи
-        desc_label = QLabel("Описание задачи:")
-        layout.addWidget(desc_label)
-        
-        self.task_description_input = QTextEdit()
-        self.task_description_input.setPlaceholderText("Введите описание задачи")
-        layout.addWidget(self.task_description_input)
-        self.task_description_input.setFixedHeight(100)
 
         # Подзадачи
         subtasks_label = QLabel("Подзадачи:")
+        subtasks_label.setObjectName("dialog_label")
         layout.addWidget(subtasks_label)
         
         self.subtasks_input = QTextEdit()
         self.subtasks_input.setPlaceholderText("Введите подзадачи через точку с запятой (;)")
+        self.subtasks_input.setMinimumHeight(120)  # Увеличиваем высоту поля подзадач
         layout.addWidget(self.subtasks_input)
-        self.subtasks_input.setFixedHeight(100)
 
         # Приоритет
         priority_label = QLabel("Приоритет:")
+        priority_label.setObjectName("dialog_label")
         layout.addWidget(priority_label)
         
         priority_layout = QHBoxLayout()
+        priority_layout.setSpacing(20)  # Увеличиваем расстояние между радио кнопками
         self.priority_group = QButtonGroup(self)
         self.priority_group.setExclusive(True)
         
@@ -66,6 +95,7 @@ class AddTaskDialog(QDialog):
         
         for text, priority in priorities:
             radio_btn = QRadioButton(text)
+            radio_btn.setMinimumHeight(30)  # Увеличиваем высоту радио кнопок
             self.priority_group.addButton(radio_btn, priority)
             priority_layout.addWidget(radio_btn)
         
@@ -73,6 +103,9 @@ class AddTaskDialog(QDialog):
         self.priority_group.button(0).setChecked(True)
         
         layout.addLayout(priority_layout)
+
+        # Добавляем растягивающийся элемент перед кнопками
+        layout.addStretch()
 
         self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
         self.button_box.accepted.connect(self.accept)
@@ -93,6 +126,11 @@ class AddTaskDialog(QDialog):
 
     def get_subtasks(self):
         return self.subtasks_input.toPlainText()
+
+    def get_selected_list_index(self):
+        if self.from_all_tasks:
+            return self.list_select.currentIndex()
+        return 0  # Возвращаем 0, если диалог открыт не из "Все задачи"
 
     def accept(self):
         if not self.task_name_input.text().strip():

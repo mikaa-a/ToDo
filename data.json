@@ -1,6 +1,6 @@
 [
     {
-        "list_name": "Список 1олег",
+        "list_name": "Список 1",
         "id": 1,
         "tasks": [
             {
@@ -265,6 +265,24 @@
                 "task_priority": 2,
                 "task_due_date": "Thu, 8 May 2025",
                 "task_is_done": true,
+                "task_subtasks": []
+            },
+            {
+                "id": 6,
+                "task_name": "т",
+                "task_description": "",
+                "task_priority": 0,
+                "task_due_date": "Sun, 8 June 2025",
+                "task_is_done": false,
+                "task_subtasks": []
+            },
+            {
+                "id": 7,
+                "task_name": "новая задача",
+                "task_description": "",
+                "task_priority": 0,
+                "task_due_date": "Sun, 8 June 2025",
+                "task_is_done": false,
                 "task_subtasks": []
             }
         ]

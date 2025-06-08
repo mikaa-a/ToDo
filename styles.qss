@@ -86,26 +86,26 @@
     background-color: #8AB38B;
 }
 
-#add_task_btn, #edit_list_btn {
+#add_task_btn, #edit_list_btn, #add_task_2, #add_list, #add_list_btn {
     background-color: transparent;
     color: #353028;
     font-size: 18px;
     font-weight: 400;
     padding: 0 10px;
-    text-align: right;
-    min-width: 130px;
+    border: none;
+    min-width: 170px;
+    text-align: center;
     white-space: nowrap;
 }
 
-#edit_list_btn {
+#add_task_btn:hover, #edit_list_btn:hover, #add_task_2:hover, #add_list:hover, #add_list_btn:hover {
+    color: #6C946D;
     background-color: transparent;
-    color: #353028;
-    font-size: 18px;
-    font-weight: 400;
-    padding: 0 10px;
-    text-align: left;
-    min-width: 220px;
-    white-space: nowrap;
+}
+
+#add_task_btn:pressed, #edit_list_btn:pressed, #add_task_2:pressed, #add_list:pressed, #add_list_btn:pressed {
+    color: #4A7C5B;
+    background-color: transparent;
 }
 
 #separator_dot {
@@ -114,12 +114,30 @@
     font-weight: 300;
 }
 
-#list_text {
+#list_text, #all_task_text, #my_lists_text, #my_lists_text_2, #all_tasks_label {
     color: #353028;
     font-size: 28px;
     font-weight: 600;
     line-height: 1.2;
-    min-height: 10px;
+    min-height: 40px;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#focus_mode {
+    color: #353028;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+    min-height: 40px;
+    padding: 0;
+    margin: 15px 0 0 0;
+    text-align: left;
+    position: relative;
 }
 
 #back_to_list_btn {
@@ -131,43 +149,60 @@
     text-align: left;
 }
 
-#tasks_scroll_area {
+#tasks_scroll_area, #tasks_scroll_area_2, #all_tasks_scroll_area, #lists_scroll_area {
     border: none;
-    background-color: transparent;
+    background-color: #F3F2F3;
     margin-bottom: 20px;
-}
-
-#tasks_scroll_area > QWidget > QWidget {
-    background-color: transparent;
     border-radius: 12px;
-    padding-bottom: 20px;
 }
 
-#tasks_scroll_area QScrollBar:vertical {
+#tasks_scroll_area QWidget#qt_scrollarea_viewport,
+#tasks_scroll_area_2 QWidget#qt_scrollarea_viewport,
+#all_tasks_scroll_area QWidget#qt_scrollarea_viewport,
+#lists_scroll_area QWidget#qt_scrollarea_viewport {
+    background-color: #F3F2F3;
+    border-radius: 12px;
+}
+
+#tasks_scroll_area QScrollBar:vertical,
+#tasks_scroll_area_2 QScrollBar:vertical,
+#all_tasks_scroll_area QScrollBar:vertical,
+#lists_scroll_area QScrollBar:vertical {
     border: none;
     background-color: transparent;
     width: 8px;
-     margin: 0 0 0 4px;
+    margin: 0 0 0 0;
 }
 
-#tasks_scroll_area QScrollBar::handle:vertical {
+#tasks_scroll_area QScrollBar::handle:vertical,
+#tasks_scroll_area_2 QScrollBar::handle:vertical,
+#all_tasks_scroll_area QScrollBar::handle:vertical,
+#lists_scroll_area QScrollBar::handle:vertical {
     background-color: #B1CCBB;
     border-radius: 2px;
     min-height: 30px;
 }
 
 #tasks_scroll_area QScrollBar::add-line:vertical,
-#tasks_scroll_area QScrollBar::sub-line:vertical {
+#tasks_scroll_area QScrollBar::sub-line:vertical,
+#tasks_scroll_area_2 QScrollBar::add-line:vertical,
+#tasks_scroll_area_2 QScrollBar::sub-line:vertical,
+#all_tasks_scroll_area QScrollBar::add-line:vertical,
+#all_tasks_scroll_area QScrollBar::sub-line:vertical,
+#lists_scroll_area QScrollBar::add-line:vertical,
+#lists_scroll_area QScrollBar::sub-line:vertical {
     height: 0;
 }
 
 #tasks_scroll_area QScrollBar::add-page:vertical,
-#tasks_scroll_area QScrollBar::sub-page:vertical {
+#tasks_scroll_area QScrollBar::sub-page:vertical,
+#tasks_scroll_area_2 QScrollBar::add-page:vertical,
+#tasks_scroll_area_2 QScrollBar::sub-page:vertical,
+#all_tasks_scroll_area QScrollBar::add-page:vertical,
+#all_tasks_scroll_area QScrollBar::sub-page:vertical,
+#lists_scroll_area QScrollBar::add-page:vertical,
+#lists_scroll_area QScrollBar::sub-page:vertical {
     background: transparent;
-}
-
-#add_task_btn:hover, #edit_list_btn:hover, #back_to_list_btn:hover {
-    color: #6C946D;
 }
 
 #task_checkbox {
@@ -283,7 +318,7 @@
     background-color: #B1CCBB;
 }
 
-#apply_sort_btn {
+#apply_sort_btn, #sort_btn_2 {
     background-color: #6C946D;
     border-radius: 8px;
     color: #F3F2F3;
@@ -320,7 +355,7 @@ QMenu#priority_menu::item:selected {
 
 }
 
-#priority_sort_select {
+#priority_sort_select, #priority_sort_select_2 {
     background-color: #6C946D;
     border: none;
     border-radius: 8px;
@@ -332,26 +367,23 @@ QMenu#priority_menu::item:selected {
     min-height: 30px;
     max-height: 30px;
     text-align: left;
-    
 }
 
-#priority_sort_select::drop-down {
+#priority_sort_select::drop-down, #priority_sort_select_2::drop-down {
     border: none;
     width: 30px;
     background: transparent;
     box-shadow: none;
-
 }
 
-#priority_sort_select::drop-down:open {
+#priority_sort_select::drop-down:open, #priority_sort_select_2::drop-down:open {
     border: none;
     background: transparent;
     border-radius: 8px;
     box-shadow: none;
-
 }
 
-#priority_sort_select::down-arrow {
+#priority_sort_select::down-arrow, #priority_sort_select_2::down-arrow {
     image: none;
     width: 20px;
     height: 20px;
@@ -361,11 +393,11 @@ QMenu#priority_menu::item:selected {
     content: "▼";
 }
 
-#priority_sort_select:open::down-arrow {
+#priority_sort_select:open::down-arrow, #priority_sort_select_2:open::down-arrow {
     content: "▲";
 }
 
-#priority_sort_select QAbstractItemView {
+#priority_sort_select QAbstractItemView, #priority_sort_select_2 QAbstractItemView {
     background-color: #6C946D;
     border: none;
     border-radius: 8px;
@@ -380,25 +412,25 @@ QMenu#priority_menu::item:selected {
     box-shadow: none;
 }
 
-#priority_sort_select QAbstractItemView::item:last {
+#priority_sort_select QAbstractItemView::item:last, #priority_sort_select_2 QAbstractItemView::item:last {
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
 
-#priority_sort_select QAbstractItemView::item {
+#priority_sort_select QAbstractItemView::item, #priority_sort_select_2 QAbstractItemView::item {
     min-height: 30px;
     padding: 4px 6px;
     text-align: left;
     margin: 0;
 }
 
-#priority_sort_select QAbstractItemView::item:selected {
+#priority_sort_select QAbstractItemView::item:selected, #priority_sort_select_2 QAbstractItemView::item:selected {
     background-color: #B1CCBB;
     border-radius: 6px;
     font-weight: 500;
 }
 
-#sort_btn {
+#sort_btn, #sort_btn_2 {
     background-color: #6C946D;
     border: none;
     border-radius: 8px;
@@ -413,13 +445,13 @@ QMenu#priority_menu::item:selected {
     margin: 5px 0;
 }
 
-#sort_btn:hover {
+#sort_btn:hover, #sort_btn_2:hover {
     background-color: #8AB38B;
 }
 
-#sort_btn:pressed {
+#sort_btn:pressed, #sort_btn_2:pressed {
     background-color: #4A7C5B;
-    color: F3F2F3;
+    color: #F3F2F3;
 }
 
 #tasks_widget {
@@ -439,6 +471,8 @@ QMenu#priority_menu::item:selected {
 /* Стили для окна добавления задачи */
 QDialog {
     background-color: #F3F2F3;
+    min-width: 500px;
+    min-height: 600px;
 }
 
 QLabel {
@@ -700,4 +734,118 @@ QMainWindow {
     border: none;
     min-height: 0px;
     padding-bottom: 22px;
+}
+
+/* Стили для контейнеров задач */
+#tasks_container, #tasks_container_2, #tasks_container_3, #tasks_container_4 {
+    background-color: #F3F2F3;
+    border-radius: 12px;
+    border: none;
+}
+
+/* Стили для полосы прокрутки */
+QScrollBar:vertical {
+    border: none;
+    background: #F3F2F3;
+    width: 10px;
+    margin: 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #B1CCBB;
+    min-height: 20px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #A0B7A6;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/* Стили для горизонтальной полосы прокрутки */
+QScrollBar:horizontal {
+    border: none;
+    background: #F3F2F3;
+    height: 10px;
+    margin: 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #B1CCBB;
+    min-width: 20px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #A0B7A6;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+#list_button {
+    background-color: #F1ECEC;
+    border: none;
+    border-radius: 12px;
+    color: #353028;
+    font-size: 18px;
+    font-weight: 400;
+    text-align: left;
+    padding: 0 20px;
+    margin: 5px 0;
+}
+
+#list_button:hover {
+    background-color: #E5E0E0;
+}
+
+#list_button:pressed {
+    background-color: #D9D4D4;
+}
+
+#ListCard {
+    background-color: #B1CCBB;
+    border: none;
+    border-radius: 16px;
+    margin: 5px 0;
+}
+
+#ListCard:hover {
+    background-color: #A0B7A6;
+}
+
+
+
+#list_card_frame {
+    background-color: #B1CCBB;
+    border-radius: 16px;
+    padding: 12px;
+    margin: 5px 0;
+    height: 100px;
+}
+
+#list_card_frame:hover {
+    background-color: #A0B7A6;
+}
+
+/* Добавляем стили для контейнеров заголовков */
+#header_container, #list_header_container, #focus_header_container, #all_tasks_header_container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    padding: 0;
+    margin: 0;
 }
