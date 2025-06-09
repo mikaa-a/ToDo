@@ -1,5 +1,6 @@
 #central_widget, #content {
     background-color: #F3F2F3;
+    font-family: 'Montserrat';
 }
 
 #no_lists_text {
@@ -37,7 +38,8 @@
     font-size: 28px;
     font-weight: 400;
     color: #353028;
-    margin-top: 4px;
+    margin-top: 5px;
+    font-family: 'Montserrat';
 }
 
 #task_top_info {
@@ -50,12 +52,13 @@
     font-size: 18px;
     font-weight: 500;
     color: #353028;
+    font-family: 'Montserrat';
 }
 
 #task_description, #task_sub_tasks {
-    font-size: 18px;
+    font-size: 17px;
     color: #353028;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 #edit_button {

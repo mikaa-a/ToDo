@@ -12,11 +12,6 @@
                 "task_is_done": true,
                 "task_subtasks": [
                     {
-                        "id": 3,
-                        "subtask_name": "подзадача 3",
-                        "is_completed": false
-                    },
-                    {
                         "id": 2,
                         "subtask_name": "подзадача 2",
                         "is_completed": true
@@ -24,6 +19,11 @@
                     {
                         "id": 1,
                         "subtask_name": "Подзадача 1",
+                        "is_completed": true
+                    },
+                    {
+                        "id": 3,
+                        "subtask_name": "подзадача 3",
                         "is_completed": true
                     }
                 ]
@@ -37,11 +37,6 @@
                 "task_is_done": false,
                 "task_subtasks": [
                     {
-                        "id": 3,
-                        "subtask_name": "пожарить",
-                        "is_completed": false
-                    },
-                    {
                         "id": 4,
                         "subtask_name": "вскипятить воду",
                         "is_completed": false
@@ -52,14 +47,19 @@
                         "is_completed": false
                     },
                     {
+                        "id": 3,
+                        "subtask_name": "пожарить",
+                        "is_completed": false
+                    },
+                    {
                         "id": 2,
                         "subtask_name": "съесть",
-                        "is_completed": false
+                        "is_completed": true
                     },
                     {
                         "id": 6,
                         "subtask_name": "тутуту",
-                        "is_completed": false
+                        "is_completed": true
                     },
                     {
                         "id": 5,

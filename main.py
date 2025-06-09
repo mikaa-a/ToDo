@@ -2,6 +2,7 @@ import sys
 import json
 from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame, QMessageBox, QLayout, QComboBox, QSpacerItem
 from PySide6.QtCore import QFile, Qt, QDate, QRect
+from PySide6.QtGui import QFontDatabase, QFont
 from ui_mainwindow import Ui_Form
 from dialogs.dialog import AddTaskDialog, EditListDialog
 from dialogs.add_list_dialog import AddListDialog
@@ -1274,6 +1275,25 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    
+    # Загружаем разные начертания шрифта Montserrat
+    font_files = {
+        'Regular': 'fonts/Montserrat-Regular.ttf',
+        'Medium': 'fonts/Montserrat-Medium.ttf',
+        'SemiBold': 'fonts/Montserrat-SemiBold.ttf',
+        'Bold': 'fonts/Montserrat-Bold.ttf',
+        'Light': 'fonts/Montserrat-Light.ttf'
+    }
+    
+    for weight, file_path in font_files.items():
+        font_id = QFontDatabase.addApplicationFont(file_path)
+        if font_id == -1:
+            print(f"Ошибка загрузки шрифта Montserrat {weight}")
+        else:
+            font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+            if weight == 'Regular':
+                app.setFont(QFont(font_family))
+    
     stylesheet = load_stylesheet('styles.qss')
 
     if stylesheet:
