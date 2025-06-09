@@ -17,7 +17,7 @@ class TaskCard(QWidget):
         self.container = QFrame()
         self.container.setObjectName("task_card")
         self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.container.setMinimumWidth(0)  # Позволяем контейнеру сжиматься
+        self.container.setMinimumWidth(0)
         self.container.setStyleSheet("""
             QFrame#task_card {
                 background-color: #B1CCBB;
@@ -50,6 +50,28 @@ class TaskCard(QWidget):
             }
             QCheckBox#task_checkbox {
                 background-color: transparent;
+                spacing: 0px;
+                margin: 0px;
+                padding: 0px;
+            }
+            QCheckBox#task_checkbox::indicator {
+                width: 24px;
+                height: 24px;
+                border: 1px solid #353028;
+                border-radius: 4px;
+                margin: 0px;
+                padding: 0px;
+            }
+            QCheckBox#task_checkbox::indicator:checked {
+                background-color: #6C946D;
+                border: none;
+                image: url(check.png);
+            }
+            QCheckBox#task_checkbox::indicator:hover {
+                border-color: #8AB38B;
+            }
+            QCheckBox#task_checkbox::indicator:checked:hover {
+                background-color: #8AB38B;
             }
             QWidget#checkbox_container {
                 background-color: transparent;
@@ -70,22 +92,23 @@ class TaskCard(QWidget):
         # Чекбокс и название задачи
         self.checkbox = QCheckBox()
         self.checkbox.setObjectName("task_checkbox")
-        self.checkbox.setFixedSize(32, 32)  # Размер чекбокса
-        self.checkbox.setContentsMargins(0, 0, 0, 0)  # Убираем отступы чекбокса
+        self.checkbox.setFixedSize(24, 24)  # Уменьшаем размер чекбокса
+        self.checkbox.setContentsMargins(0, 0, 0, 0)
         self.checkbox.clicked.connect(self.handle_task_click)
         checkbox_container = QWidget()
         checkbox_container.setObjectName("checkbox_container")
-        checkbox_container.setFixedSize(38, 38)  # Оставляем увеличенный размер контейнера
+        checkbox_container.setFixedSize(32, 32)  # Уменьшаем размер контейнера
         checkbox_layout = QHBoxLayout(checkbox_container)
-        checkbox_layout.setContentsMargins(8, 8, 8, 8)  # Возвращаем прежние отступы
+        checkbox_layout.setContentsMargins(4, 4, 4, 4)  # Уменьшаем отступы
         checkbox_layout.setSpacing(0)
         checkbox_layout.addWidget(self.checkbox, alignment=Qt.AlignCenter)
-        self.top_layout.addWidget(checkbox_container)
+        self.top_layout.addWidget(checkbox_container, alignment=Qt.AlignVCenter)  # Выравниваем по вертикали
         
         self.task_name = QLabel(text)
         self.task_name.setObjectName("task_name")
-        self.task_name.setWordWrap(True)  # Разрешаем перенос текста
+        self.task_name.setWordWrap(True)
         self.task_name.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.task_name.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)  # Выравниваем текст по вертикали
         self.top_layout.addWidget(self.task_name)
         
         # Добавляем растягивающийся элемент
@@ -167,7 +190,7 @@ class TaskCard(QWidget):
                 subtask_layout.setSpacing(8)
                 
                 subtask = SubtaskWidget(subtask)
-                subtask.checkbox.clicked.connect(lambda checked, w=subtask_widget: self.handle_subtask_click(checked, w))
+                subtask.checkbox.clicked.connect(lambda checked, w=subtask: self.handle_subtask_click(checked, w))
                 subtask_layout.addWidget(subtask)
                 
                 self.subtasks_layout.addWidget(subtask_widget)
@@ -275,7 +298,7 @@ class TaskCard(QWidget):
                     subtask_layout.setSpacing(8)
                     
                     subtask = SubtaskWidget(subtask)
-                    subtask.checkbox.clicked.connect(lambda checked, w=subtask_widget: self.handle_subtask_click(checked, w))
+                    subtask.checkbox.clicked.connect(lambda checked, w=subtask: self.handle_subtask_click(checked, w))
                     subtask_layout.addWidget(subtask)
                     
                     self.subtasks_layout.addWidget(subtask_widget)
@@ -384,20 +407,9 @@ class TaskCard(QWidget):
             print(f"Ошибка при сохранении состояния задачи: {e}")
 
     def handle_subtask_click(self, checked, widget):
-        # Зачеркиваем или возвращаем текст
-        label = widget.findChild(QLabel)
-        if label:
-            if checked:
-                label.setStyleSheet("text-decoration: line-through; color: #666666;")
-                # Перемещаем виджет в конец списка
-                self.subtasks_layout.removeWidget(widget)
-                self.subtasks_layout.addWidget(widget)
-            else:
-                label.setStyleSheet("")
-                # Перемещаем виджет в начало списка
-                self.subtasks_layout.removeWidget(widget)
-                self.subtasks_layout.insertWidget(0, widget)
-                
+        # Обновляем стиль подзадачи
+        widget.update_style()
+        
         # Сохраняем состояние в JSON
         try:
             with open('data.json', 'r', encoding='utf-8') as file:
@@ -408,7 +420,7 @@ class TaskCard(QWidget):
             for task in task_list['tasks']:
                 if task['id'] == self.task_id:
                     # Находим подзадачу по тексту
-                    label = widget.findChild(QLabel)
+                    label = widget.label
                     if label:
                         subtask_text = label.text()
                         # Находим и обновляем подзадачу
@@ -436,15 +448,16 @@ class TaskCard(QWidget):
 class SubtaskWidget(QWidget):
     def __init__(self, text, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(32)  # Фиксированная высота для виджета
+        self.setFixedHeight(32)
         
+        # Основной layout
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(8)
         
         # Чекбокс
         self.checkbox = QCheckBox()
-        self.checkbox.setFixedSize(23, 23)  # Уменьшаем размер чекбокса на 1 пиксель
+        self.checkbox.setFixedSize(20, 20)
         self.checkbox.setStyleSheet("""
             QCheckBox {
                 spacing: 0px;
@@ -452,8 +465,8 @@ class SubtaskWidget(QWidget):
                 padding: 0px;
             }
             QCheckBox::indicator {
-                width: 23px;
-                height: 23px;
+                width: 20px;
+                height: 20px;
                 border: 1px solid #353028;
                 border-radius: 4px;
                 margin: 0px;
@@ -471,7 +484,7 @@ class SubtaskWidget(QWidget):
                 background-color: #8AB38B;
             }
         """)
-        layout.addWidget(self.checkbox, 0, Qt.AlignVCenter)  # Выравниваем по вертикали
+        layout.addWidget(self.checkbox, 0, Qt.AlignVCenter)
         
         # Текст подзадачи
         self.label = QLabel(text)
@@ -486,14 +499,41 @@ class SubtaskWidget(QWidget):
                 font-weight: 300;
                 padding: 0px;
                 margin: 0px;
+                line-height: 32px;
             }
         """)
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        layout.addWidget(self.label, 1)  # Даем тексту растягиваться
+        layout.addWidget(self.label, 1)
         
         # Устанавливаем курсор на весь виджет
         self.setCursor(Qt.PointingHandCursor)
         
     def mousePressEvent(self, event):
         self.checkbox.setChecked(not self.checkbox.isChecked())
+        self.update_style()
         super().mousePressEvent(event)
+        
+    def update_style(self):
+        if self.checkbox.isChecked():
+            self.label.setStyleSheet("""
+                QLabel {
+                    font-size: 16px;
+                    color: #666666;
+                    font-weight: 300;
+                    padding: 0px;
+                    margin: 0px;
+                    line-height: 32px;
+                    text-decoration: line-through;
+                }
+            """)
+        else:
+            self.label.setStyleSheet("""
+                QLabel {
+                    font-size: 16px;
+                    color: #353028;
+                    font-weight: 300;
+                    padding: 0px;
+                    margin: 0px;
+                    line-height: 32px;
+                }
+            """)

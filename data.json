@@ -12,19 +12,19 @@
                 "task_is_done": true,
                 "task_subtasks": [
                     {
+                        "id": 3,
+                        "subtask_name": "подзадача 3",
+                        "is_completed": false
+                    },
+                    {
                         "id": 2,
                         "subtask_name": "подзадача 2",
-                        "is_completed": false
+                        "is_completed": true
                     },
                     {
                         "id": 1,
                         "subtask_name": "Подзадача 1",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 3,
-                        "subtask_name": "подзадача 3",
-                        "is_completed": false
+                        "is_completed": true
                     }
                 ]
             },
@@ -76,21 +76,6 @@
                 "task_due_date": "Wed, 7 May 2025",
                 "task_is_done": false,
                 "task_subtasks": [
-                    {
-                        "id": 7,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 8,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 9,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
                     {
                         "id": 10,
                         "subtask_name": "ту",
@@ -225,6 +210,21 @@
                         "id": 6,
                         "subtask_name": "ту",
                         "is_completed": true
+                    },
+                    {
+                        "id": 7,
+                        "subtask_name": "ту",
+                        "is_completed": true
+                    },
+                    {
+                        "id": 8,
+                        "subtask_name": "ту",
+                        "is_completed": true
+                    },
+                    {
+                        "id": 9,
+                        "subtask_name": "ту",
+                        "is_completed": true
                     }
                 ]
             },
@@ -239,22 +239,22 @@
                     {
                         "id": 1,
                         "subtask_name": "О",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 3,
-                        "subtask_name": "Е",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 4,
-                        "subtask_name": "Г",
-                        "is_completed": true
+                        "is_completed": false
                     },
                     {
                         "id": 2,
                         "subtask_name": "Л",
-                        "is_completed": true
+                        "is_completed": false
+                    },
+                    {
+                        "id": 3,
+                        "subtask_name": "Е",
+                        "is_completed": false
+                    },
+                    {
+                        "id": 4,
+                        "subtask_name": "Г",
+                        "is_completed": false
                     }
                 ]
             },
