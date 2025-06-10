@@ -21,8 +21,7 @@ class TaskCard(QWidget):
         self.container.setStyleSheet("""
             QFrame#task_card {
                 background-color: #B1CCBB;
-                border-radius: 12px;
-                padding: 12px;
+                border-radius: 16px;
                 min-width: 0;  /* Позволяет контейнеру сжиматься */
             }
             QLabel#task_name, QLabel#task_description, QLabel#description_label, QLabel#subtasks_label, QLabel#task_top_info {
@@ -31,15 +30,15 @@ class TaskCard(QWidget):
             QPushButton#edit_button {
                 background-color: #6C946D;
                 border: none;
-                border-radius: 8px;
+                border-radius: 10px;
                 color: #F3F2F3;
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: 400;
                 padding: 4px 12px;
-                min-width: 120px;
-                max-width: 120px;
-                min-height: 32px;
-                max-height: 32px;
+                min-width: 108px;
+                max-width: 108px;
+                min-height: 20px;
+                max-height: 20px;
             }
             QPushButton#edit_button:hover {
                 background-color: #8AB38B;
@@ -58,7 +57,7 @@ class TaskCard(QWidget):
                 width: 24px;
                 height: 24px;
                 border: 1px solid #353028;
-                border-radius: 4px;
+                border-radius: 6px;
                 margin: 0px;
                 padding: 0px;
             }
@@ -81,7 +80,7 @@ class TaskCard(QWidget):
         # Основной layout для контейнера
         self.main_layout = QVBoxLayout(self.container)
         self.main_layout.setSpacing(0)  # Уменьшаем расстояние между всеми элементами
-        self.main_layout.setContentsMargins(8, 8, 8, 8)
+        self.main_layout.setContentsMargins(12, 12, 12, 12)  # Увеличиваем отступы контейнера
         self.main_layout.setSizeConstraint(QLayout.SetMinAndMaxSize)
 
         # Верхняя часть с названием, датой и приоритетом
@@ -97,10 +96,10 @@ class TaskCard(QWidget):
         checkbox_container = QWidget()
         checkbox_container.setObjectName("checkbox_container")
         checkbox_layout = QHBoxLayout(checkbox_container)
-        checkbox_layout.setContentsMargins(10, 4, 0, 0)  # Уменьшаем отступы
+        checkbox_layout.setContentsMargins(6, 4, 0, 0)  
         checkbox_layout.setSpacing(0)
         checkbox_layout.addWidget(self.checkbox, alignment=Qt.AlignCenter)
-        self.top_layout.addWidget(checkbox_container, alignment=Qt.AlignVCenter)  # Выравниваем по вертикали
+        self.top_layout.addWidget(checkbox_container, alignment=Qt.AlignVCenter)
         
         self.task_name = QLabel(text)
         self.task_name.setObjectName("task_name")
@@ -113,12 +112,16 @@ class TaskCard(QWidget):
         self.top_layout.addStretch()
         
         # Дата и приоритет
-        self.top_info = QLabel(f"{self.format_date(date)} • {self.get_priority_text(priority)}")
+        self.top_info = QLabel(f"{self.format_date(date)}  •  {self.get_priority_text(priority)}")
         self.top_info.setObjectName("task_top_info")
         self.top_info.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.top_layout.addWidget(self.top_info)
         
         self.main_layout.addLayout(self.top_layout)
+
+        # Добавляем отступ после заголовка
+        header_spacer = QSpacerItem(20, 8, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.main_layout.addItem(header_spacer)
 
         # Описание
         self.description_label = QLabel("Описание:")
@@ -157,6 +160,7 @@ class TaskCard(QWidget):
             QScrollArea {
                 border: none;
                 background-color: transparent;
+                margin-top: -8px;  
             }
         """)
                 
@@ -450,7 +454,7 @@ class TaskCard(QWidget):
 class SubtaskWidget(QWidget):
     def __init__(self, text, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(16)  # Уменьшаем высоту виджета
+        self.setFixedHeight(16)  
         
         # Основной layout
         layout = QHBoxLayout(self)
@@ -464,6 +468,7 @@ class SubtaskWidget(QWidget):
                 spacing: 0px;
                 margin: 0px;
                 padding: 0px;
+                margin-left: 2px;
             }
             QCheckBox::indicator {
                 border: 1px solid #353028;
@@ -488,15 +493,14 @@ class SubtaskWidget(QWidget):
         self.label = QLabel(text)
         self.label.setWordWrap(True)
         self.label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.label.setContentsMargins(0, 0, 0, 0)
         self.label.setStyleSheet("""
             QLabel {
-                font-size: 17px;
+                font-size: 18px;
                 color: #353028;
                 font-weight: 400;
                 padding: 0px;
                 margin-top: 0px;
-                line-height: 17px;
+                line-height: 18px;
             }
         """)
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -514,23 +518,23 @@ class SubtaskWidget(QWidget):
         if self.checkbox.isChecked():
             self.label.setStyleSheet("""
                 QLabel {
-                    font-size: 17px;
+                    font-size: 18px;
                     color: #666666;
                     font-weight: 400;
                     padding: 0px;
                     margin-top: 0px;
-                    line-height: 17px;
+                    line-height: 18px;
                     text-decoration: line-through;
                 }
             """)
         else:
             self.label.setStyleSheet("""
                 QLabel {
-                    font-size: 17px;
+                    font-size: 18px;
                     color: #353028;
                     font-weight: 400;
                     padding: 0px;
                     margin-top: 0px;
-                    line-height: 17px;
+                    line-height: 18px;
                 }
             """)

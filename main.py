@@ -1,8 +1,8 @@
 import sys
 import json
 from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizePolicy, QVBoxLayout, QWidget, QScrollArea, QHBoxLayout, QCheckBox, QPushButton, QFrame, QMessageBox, QLayout, QComboBox, QSpacerItem
-from PySide6.QtCore import QFile, Qt, QDate, QRect
-from PySide6.QtGui import QFontDatabase, QFont
+from PySide6.QtCore import QFile, Qt, QDate, QRect, QSize
+from PySide6.QtGui import QFontDatabase, QFont, QIcon
 from ui_mainwindow import Ui_Form
 from dialogs.dialog import AddTaskDialog, EditListDialog
 from dialogs.add_list_dialog import AddListDialog
@@ -32,8 +32,7 @@ class ListCard(QWidget):
         self.container.setObjectName("list_card_frame")
         self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.container.setMinimumWidth(0)
-        self.container.setMinimumHeight(120)
-        self.container.setMaximumHeight(120)
+      
         
         # Основной layout для контейнера
         container_layout = QHBoxLayout(self.container)
@@ -212,10 +211,16 @@ class MainWindow(QMainWindow):
         content_layout.setContentsMargins(0, 0, 0, 0)
         content_layout.setSpacing(0)
 
-        # Инициализируем UI
         self.ui = Ui_Form()
         self.ui.setupUi(content_container)
         self.stacked_widget = self.ui.content
+
+        for widget in self.findChildren(QLabel):
+            widget.setStyleSheet(widget.styleSheet() + "font-family: 'Montserrat';")
+        for widget in self.findChildren(QPushButton):
+            widget.setStyleSheet(widget.styleSheet() + "font-family: 'Montserrat';")
+        for widget in self.findChildren(QComboBox):
+            widget.setStyleSheet(widget.styleSheet() + "font-family: 'Montserrat';")
 
         # Удаляем старую геометрию content
         self.ui.content.setGeometry(QRect())
@@ -230,26 +235,17 @@ class MainWindow(QMainWindow):
         # Создаем контейнер для меню
         self.menu_container = QWidget()
         self.menu_container.setObjectName("menu_container")
-        self.menu_container.setFixedHeight(51)
-        self.menu_container.setFixedWidth(200)
-        self.menu_container.setStyleSheet("""
-            QWidget#menu_container {
-                background-color: #B1CCBB;
-                border-radius: 12px;
-                margin: 0 auto;
-            }
-        """)
+        self.menu_container.setFixedHeight(45)
+        self.menu_container.setFixedWidth(235)
         
         # Создаем лейаут для меню
         menu_layout = QHBoxLayout(self.menu_container)
-        menu_layout.setContentsMargins(10, 0, 10, 0)
-        menu_layout.setSpacing(5)
+        menu_layout.setContentsMargins(30, 0, 50, 0)
+        menu_layout.setSpacing(0)
         menu_layout.setAlignment(Qt.AlignCenter)
         
         # Настраиваем кнопки меню
         for button in [self.ui.all_task_btn, self.ui.all_lists_btn, self.ui.focus_mode_btn]:
-            button.setFixedSize(40, 40)
-            button.setContentsMargins(0, 0, 0, 0)
             button.setStyleSheet("""
                 QPushButton {
                     border: none;
@@ -266,7 +262,6 @@ class MainWindow(QMainWindow):
         menu_wrapper.setObjectName("menu_wrapper")
         menu_wrapper_layout = QVBoxLayout(menu_wrapper)
         menu_wrapper_layout.setContentsMargins(0, 0, 0, 0)
-        menu_wrapper_layout.setSpacing(0)
         
         # Создаем три равных пространства для вертикального распределения
         top_spacer = QWidget()
@@ -384,8 +379,8 @@ class MainWindow(QMainWindow):
 
         # Создаем главный лейаут для страницы списка
         self.list_page_layout = QVBoxLayout(self.ui.list_page)
-        self.list_page_layout.setContentsMargins(38, 38, 38, 38)
-        self.list_page_layout.setSpacing(10)  # Уменьшаем расстояние между элементами с 20 до 10 пикселей
+        self.list_page_layout.setContentsMargins(28, 28, 28, 28)
+        self.list_page_layout.setSpacing(0)  # Уменьшаем расстояние между элементами с 10 до 5 пикселей
 
         # Создаем верхний лейаут для заголовка и кнопок
         self.header_layout = QHBoxLayout()
@@ -399,7 +394,7 @@ class MainWindow(QMainWindow):
         self.ui.list_text.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.ui.list_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.ui.list_text.setContentsMargins(0, 0, 0, 0)
-        self.ui.list_text.setStyleSheet("margin: 0; padding: 0;")  # Убираем все возможные отступы через стили
+        self.ui.list_text.setStyleSheet("margin: 0; padding: 0; font-weight: 600;")  # Убираем все возможные отступы через стили
         
         # Создаем контейнер для заголовка
         header_container = QWidget()
@@ -418,7 +413,7 @@ class MainWindow(QMainWindow):
         # Добавляем точку-разделитель между кнопками
         dot_label = QLabel("•")
         dot_label.setObjectName("header_dot")
-        dot_label.setStyleSheet("color: #666666; font-size: 16px; margin: 0 8px;")
+        dot_label.setStyleSheet("color: #666666; font-size: 16px; margin: 0 0px;")
         self.header_layout.addWidget(dot_label)
         
         self.header_layout.addWidget(self.ui.edit_list_btn)
@@ -431,7 +426,10 @@ class MainWindow(QMainWindow):
         self.list_page_layout.addLayout(self.header_layout)
 
         # Добавляем кнопку "Вернуться к спискам"
+        self.ui.back_to_list_btn.setContentsMargins(0, -24, 0, 0)  # Убираем отступ снизу
+        self.ui.back_to_list_btn.clicked.connect(self.show_all_lists_page)  # Добавляем обработчик
         self.list_page_layout.addWidget(self.ui.back_to_list_btn)
+        self.list_page_layout.addSpacing(24)  # Добавляем отступ после кнопки
 
         # Создаем лейаут для сортировки
         self.sort_layout = QHBoxLayout()
@@ -445,6 +443,7 @@ class MainWindow(QMainWindow):
         
         # Добавляем лейаут сортировки в главный лейаут
         self.list_page_layout.addLayout(self.sort_layout)
+        self.list_page_layout.addSpacing(12)  # Добавляем отступ между сортировкой и задачами
 
         # Создаем контейнер для области прокрутки
         scroll_container = QWidget()
@@ -524,10 +523,25 @@ class MainWindow(QMainWindow):
         # Загружаем задачи при инициализации
         self.load_tasks_from_json()
 
-        # Устанавливаем текст для кнопок нижнего меню
-        self.ui.all_task_btn.setText("1")
-        self.ui.all_lists_btn.setText("2")
-        self.ui.focus_mode_btn.setText("3")
+        # Устанавливаем иконки для кнопок нижнего меню
+        self.ui.all_task_btn.setIcon(QIcon("icons/all_tasks.png"))
+        self.ui.all_lists_btn.setIcon(QIcon("icons/my_lists.png"))
+        self.ui.focus_mode_btn.setIcon(QIcon("icons/focus_mode.png"))
+
+        # Устанавливаем размер иконок
+        icon_size = 32
+        self.ui.all_task_btn.setIconSize(QSize(icon_size, icon_size))
+        self.ui.all_lists_btn.setIconSize(QSize(icon_size, icon_size))
+        self.ui.focus_mode_btn.setIconSize(QSize(icon_size, icon_size))
+
+        # Очищаем текст с кнопок
+        self.ui.all_task_btn.setText("")
+        self.ui.all_lists_btn.setText("")
+        self.ui.focus_mode_btn.setText("")
+
+        # Настраиваем выравнивание иконок по центру
+        for btn in [self.ui.all_task_btn, self.ui.all_lists_btn, self.ui.focus_mode_btn]:
+            btn.setStyleSheet(btn.styleSheet() + "text-align: center;")
 
         # Подключаем обработчики для кнопок нижнего меню
         self.ui.focus_mode_btn.clicked.connect(self.show_focus_page)

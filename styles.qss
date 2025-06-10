@@ -8,6 +8,7 @@
     font-size: 60px;
     font-weight: 500;
     color: #000000;
+    font-family: 'Montserrat';
 }
 
 #no_lists_questions {
@@ -15,12 +16,14 @@
     font-size: 55px;
     font-weight: 500;
     color: #000000;
+    font-family: 'Montserrat';
 }
 
 #my_lists_text {
     font-size: 60px;
     font-weight: 500;
     color: #000000;
+    font-family: 'Montserrat';
 }
 
 #add_list_btn {
@@ -32,6 +35,7 @@
     height: 99px;
     width: 541px;
     color: #F3F2F3;
+    font-family: 'Montserrat';
 }
 
 #task_name {
@@ -40,12 +44,15 @@
     color: #353028;
     margin-top: 5px;
     font-family: 'Montserrat';
+    margin-top: 0px;
 }
 
 #task_top_info {
-    font-size: 16px;
+    font-size: 18px;
     color: #353028;
-    font-weight: 300;
+    font-weight: 400;
+    font-family: 'Montserrat';
+    margin-top: 0px;
 }
 
 #description_label, #subtasks_label {
@@ -59,6 +66,10 @@
     font-size: 17px;
     color: #353028;
     font-weight: 400;
+    padding: 0;
+    margin-top: 8px;
+    margin-left: 1px;
+    font-family: 'Montserrat';
 }
 
 #edit_button {
@@ -66,6 +77,7 @@
     border-radius: 6px;
     padding: 2px 8px;
     color: #F3F2F3;
+    font-family: 'Montserrat';
 }
 
 #task_checkbox::indicator {
@@ -74,11 +86,13 @@
     border: 1px solid #353028;
     border-radius: 6px;
     background-color: none;
+    font-family: 'Montserrat';
 }
 
 #task_checkbox::indicator:checked {
     background-color: #6C946D;
     border-color: none;
+    font-family: 'Montserrat';
 }
 
 #task_checkbox::indicator:hover {
@@ -157,7 +171,7 @@
     background-color: transparent;
     border: none;
     color: #353028;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 400;
     text-align: left;
 }
@@ -377,14 +391,13 @@ QMenu#priority_menu::item:selected {
 }
 
 #priority_sort_select, #priority_sort_select_2 {
-    background-color: #6C946D;
+    background-color: #B1CCBB;
     border: none;
     border-radius: 8px;
-    color: #F3F2F3;
-    font-size: 20px;
+    color: #353028;
+    font-size: 18px;
     font-weight: 350px;
-    padding: 4px 16px;
-    max-width: 190px;
+    padding: 4px 12px;
     min-height: 30px;
     max-height: 30px;
     text-align: left;
@@ -394,14 +407,12 @@ QMenu#priority_menu::item:selected {
     border: none;
     width: 30px;
     background: transparent;
-    box-shadow: none;
 }
 
 #priority_sort_select::drop-down:open, #priority_sort_select_2::drop-down:open {
     border: none;
     background: transparent;
     border-radius: 8px;
-    box-shadow: none;
 }
 
 #priority_sort_select::down-arrow, #priority_sort_select_2::down-arrow {
@@ -411,11 +422,9 @@ QMenu#priority_menu::item:selected {
     background: none;
     color: #353028;
     font-size: 20px;
-    content: "▼";
 }
 
 #priority_sort_select:open::down-arrow, #priority_sort_select_2:open::down-arrow {
-    content: "▲";
 }
 
 #priority_sort_select QAbstractItemView, #priority_sort_select_2 QAbstractItemView {
@@ -430,7 +439,6 @@ QMenu#priority_menu::item:selected {
     selection-color: #F3F2F3;
     outline: none;
     margin-top: 8px;
-    box-shadow: none;
 }
 
 #priority_sort_select QAbstractItemView::item:last, #priority_sort_select_2 QAbstractItemView::item:last {
@@ -456,11 +464,11 @@ QMenu#priority_menu::item:selected {
     border: none;
     border-radius: 8px;
     color: #F3F2F3;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
     padding: 4px 12px;
-    min-width: 105px;
-    max-width: 105px;
+    min-width: 110px;
+    max-width: 110px;
     min-height: 30px;
     max-height: 30px;
     margin: 5px 0;
@@ -530,7 +538,6 @@ QDateEdit::down-arrow {
     background: none;
     color: #353028;
     font-size: 20px;
-    content: "▼";
 }
 
 QRadioButton {
@@ -706,24 +713,37 @@ QCalendarWidget QTableView::item:disabled {
     width: 100%;
 }
 
-#focus_mode_btn, #all_task_btn, #all_lists_btn {
-    background-color: transparent;
-    border: none;
-    color: #F3F2F3;
-    font-size: 20px;
-    font-weight: 400;
-    min-width: 35px;
-    max-width: 35px;
-    min-height: 50px;
-    max-height: 50px;
-    margin: 0;
-    padding: 0;
-    position: relative;
+#menu_container {
+    background-color: #B1CCBB;
+    border-radius: 8px;
+    margin: 0 auto 0 auto;
+    height: 40px;
 }
 
-#focus_mode_btn:hover, #all_task_btn:hover, #all_lists_btn:hover {
-    color: #F3F2F3;
+#all_task_btn, #all_lists_btn, #focus_mode_btn {
+    border: none;
     background-color: transparent;
+    font-size: 18px;
+    color: #F3F2F3;
+    border-radius: 8px;
+    padding: 4px;
+    min-width: 32px;
+    min-height: 32px;
+    text-align: center;
+    margin: 0 15px;
+}
+
+#all_task_btn:hover, #all_lists_btn:hover, #focus_mode_btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#all_task_btn:pressed, #all_lists_btn:pressed, #focus_mode_btn:pressed {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#all_task_btn QIcon, #all_lists_btn QIcon, #focus_mode_btn QIcon {
+    width: 24px;
+    height: 24px;
 }
 
 #bottom_menu_container {
@@ -1067,7 +1087,6 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
     font-weight: 400;
     width: 100%;
     min-width: 0;
-    word-wrap: break-word;
 }
 
 #list_name {
@@ -1076,7 +1095,6 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
     font-weight: 400;
     width: 100%;
     min-width: 0;
-    word-wrap: break-word;
 }
 
 #horizontalLayoutWidget_3 {
