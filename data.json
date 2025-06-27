@@ -1,313 +1,364 @@
 [
     {
-        "list_name": "Список 1",
+        "list_name": "Проект Альфа: Запуск продукта",
         "id": 1,
         "tasks": [
             {
                 "id": 1,
-                "task_name": "Задача 1",
-                "task_description": "Описание задачи ",
+                "task_name": "Провести исследование рынка",
+                "task_description": "Анализ предпочтений целевой аудитории и продуктов конкурентов для определения позиционирования продукта.",
                 "task_priority": 3,
-                "task_due_date": "Thu, 8 May 2025",
-                "task_is_done": false,
+                "task_due_date": "Mon, 30 June 2025",
+                "task_is_done": true,
                 "task_subtasks": [
                     {
-                        "id": 3,
-                        "subtask_name": "подзадача 3",
-                        "is_completed": false
+                        "id": 1,
+                        "subtask_name": "Опросить 500 потенциальных клиентов",
+                        "is_completed": true
                     },
                     {
                         "id": 2,
-                        "subtask_name": "подзадача 2",
-                        "is_completed": false
+                        "subtask_name": "Проанализировать цены конкурентов",
+                        "is_completed": true
                     },
                     {
-                        "id": 1,
-                        "subtask_name": "Подзадача 1",
+                        "id": 3,
+                        "subtask_name": "Собрать демографические данные",
                         "is_completed": false
                     }
-                ]
+                ],
+                "is_focused": false,
+                "start_time": "25 июня 2025 в 09:00"
             },
             {
                 "id": 2,
-                "task_name": "приготовить пельмешки",
-                "task_description": "пожарить в кисло-сладком соусе со специями",
-                "task_priority": 3,
-                "task_due_date": "Thu, 8 May 2025",
+                "task_name": "Разработать маркетинговую кампанию",
+                "task_description": "Создать многоканальную стратегию маркетинга для запуска продукта.",
+                "task_priority": 2,
+                "task_due_date": "Wed, 2 July 2025",
                 "task_is_done": false,
-                "task_subtasks": [
-                    {
-                        "id": 4,
-                        "subtask_name": "вскипятить воду",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 1,
-                        "subtask_name": "кинуть пельмении",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 3,
-                        "subtask_name": "пожарить",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 2,
-                        "subtask_name": "съесть",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 6,
-                        "subtask_name": "тутуту",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 5,
-                        "subtask_name": "тутут",
-                        "is_completed": true
-                    }
-                ]
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "27 июня 2025 в 10:00"
             },
             {
                 "id": 3,
-                "task_name": "тутуту",
-                "task_description": "тутуту",
-                "task_priority": 1,
-                "task_due_date": "Wed, 7 May 2025",
+                "task_name": "Разработать дизайн упаковки",
+                "task_description": "Сотрудничать с командой дизайнеров для создания экологичной упаковки.",
+                "task_priority": 2,
+                "task_due_date": "Fri, 4 July 2025",
                 "task_is_done": false,
                 "task_subtasks": [
                     {
-                        "id": 10,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 11,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 12,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 13,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 14,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 15,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 16,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 17,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 18,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 19,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 20,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 21,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 22,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 23,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 24,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 25,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 26,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 27,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 28,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 29,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 30,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
                         "id": 1,
-                        "subtask_name": "ту",
+                        "subtask_name": "Выбрать экологичные материалы",
                         "is_completed": false
                     },
                     {
                         "id": 2,
-                        "subtask_name": "ту",
+                        "subtask_name": "Создать прототипы дизайна",
                         "is_completed": false
-                    },
-                    {
-                        "id": 3,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 4,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 5,
-                        "subtask_name": "ту",
-                        "is_completed": false
-                    },
-                    {
-                        "id": 6,
-                        "subtask_name": "ту",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 7,
-                        "subtask_name": "ту",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 8,
-                        "subtask_name": "ту",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 9,
-                        "subtask_name": "ту",
-                        "is_completed": true
                     }
-                ]
+                ],
+                "is_focused": false,
+                "start_time": "28 июня 2025 в 14:00"
             },
             {
                 "id": 4,
-                "task_name": "олега покормить",
-                "task_description": "олег просто олег",
+                "task_name": "Обеспечить каналы дистрибуции",
+                "task_description": "Заключить контракты с розничными магазинами и онлайн-платформами.",
                 "task_priority": 3,
-                "task_due_date": "Sun, 1 June 2025",
+                "task_due_date": "Mon, 7 July 2025",
                 "task_is_done": true,
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "26 июня 2025 в 11:00"
+            },
+            {
+                "id": 5,
+                "task_name": "Спланировать мероприятие по запуску",
+                "task_description": "Организовать мероприятие по запуску продукта с участием СМИ и инфлюенсеров.",
+                "task_priority": 1,
+                "task_due_date": "Fri, 11 July 2025",
+                "task_is_done": false,
                 "task_subtasks": [
                     {
-                        "id": 4,
-                        "subtask_name": "Г",
-                        "is_completed": true
-                    },
-                    {
-                        "id": 3,
-                        "subtask_name": "Е",
+                        "id": 1,
+                        "subtask_name": "Забронировать место проведения",
                         "is_completed": true
                     },
                     {
                         "id": 2,
-                        "subtask_name": "Л",
-                        "is_completed": true
+                        "subtask_name": "Пригласить ключевых участников",
+                        "is_completed": false
                     },
                     {
-                        "id": 1,
-                        "subtask_name": "О",
-                        "is_completed": true
+                        "id": 3,
+                        "subtask_name": "Подготовить презентацию",
+                        "is_completed": false
                     }
-                ]
-            },
-            {
-                "id": 5,
-                "task_name": "тун",
-                "task_description": "",
-                "task_priority": 2,
-                "task_due_date": "Thu, 8 May 2025",
-                "task_is_done": true,
-                "task_subtasks": []
+                ],
+                "is_focused": false,
+                "start_time": "29 июня 2025 в 15:00"
             },
             {
                 "id": 6,
-                "task_name": "т",
-                "task_description": "",
-                "task_priority": 0,
-                "task_due_date": "Sun, 8 June 2025",
+                "task_name": "Обучить команду продаж",
+                "task_description": "Провести обучающие сессии для персонала по продажам о характеристиках продукта.",
+                "task_priority": 2,
+                "task_due_date": "Wed, 9 July 2025",
                 "task_is_done": false,
-                "task_subtasks": []
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "27 июня 2025 в 13:00"
             },
             {
                 "id": 7,
-                "task_name": "новая задача",
-                "task_description": "",
-                "task_priority": 0,
-                "task_due_date": "Sun, 8 June 2025",
+                "task_name": "Настроить службу поддержки клиентов",
+                "task_description": "Создать команду поддержки для обработки запросов после запуска.",
+                "task_priority": 2,
+                "task_due_date": "Mon, 14 July 2025",
                 "task_is_done": false,
-                "task_subtasks": []
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Нанять персонал поддержки",
+                        "is_completed": false
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "Разработать базу часто задаваемых вопросов",
+                        "is_completed": false
+                    }
+                ],
+                "is_focused": false,
+                "start_time": "30 июня 2025 в 09:00"
             },
             {
                 "id": 8,
-                "task_name": "доклад",
-                "task_description": "",
+                "task_name": "Финализировать стратегию ценообразования",
+                "task_description": "Определить оптимальную ценовую политику на основе исследований рынка и затрат.",
+                "task_priority": 3,
+                "task_due_date": "Thu, 3 July 2025",
+                "task_is_done": true,
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "26 июня 2025 в 10:00"
+            },
+            {
+                "id": 9,
+                "task_name": "Создать контент для социальных сетей",
+                "task_description": "Разработать привлекательный контент для социальных платформ.",
                 "task_priority": 2,
-                "task_due_date": "Sun, 8 June 2025",
+                "task_due_date": "Tue, 8 July 2025",
                 "task_is_done": false,
-                "task_subtasks": []
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Снять рекламное видео",
+                        "is_completed": false
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "Разработать инфографику",
+                        "is_completed": false
+                    }
+                ],
+                "is_focused": false,
+                "start_time": "28 июня 2025 в 11:00"
+            },
+            {
+                "id": 10,
+                "task_name": "Протестировать образцы продукта",
+                "task_description": "Провести тестирование качества образцов продукта.",
+                "task_priority": 3,
+                "task_due_date": "Fri, 27 June 2025",
+                "task_is_done": true,
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "25 июня 2025 в 08:00"
             }
         ]
     },
     {
-        "list_name": "работа",
+        "list_name": "Проект Бета: Разработка ПО",
         "id": 2,
         "tasks": [
             {
                 "id": 1,
-                "task_name": "реферат",
-                "task_description": "",
-                "task_priority": 0,
-                "task_due_date": "Sun, 8 June 2025",
+                "task_name": "Определить объем проекта",
+                "task_description": "Задокументировать требования и результаты проекта.",
+                "task_priority": 3,
+                "task_due_date": "Tue, 1 July 2025",
+                "task_is_done": true,
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Встреча с заинтересованными сторонами",
+                        "is_completed": true
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "Составить документ требований",
+                        "is_completed": true
+                    }
+                ],
+                "is_focused": false,
+                "start_time": "27 июня 2025 в 09:00"
+            },
+            {
+                "id": 2,
+                "task_name": "Настроить среду разработки",
+                "task_description": "Установить необходимые инструменты и серверы для разработки.",
+                "task_priority": 2,
+                "task_due_date": "Thu, 3 July 2025",
                 "task_is_done": false,
-                "task_subtasks": []
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Установить IDE",
+                        "is_completed": true
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "Настроить сервер для тестирования",
+                        "is_completed": false
+                    }
+                ],
+                "is_focused": false,
+                "start_time": "28 июня 2025 в 10:00"
+            },
+            {
+                "id": 3,
+                "task_name": "Разработать архитектуру ПО",
+                "task_description": "Спроектировать модульную архитектуру для масштабируемости.",
+                "task_priority": 3,
+                "task_due_date": "Mon, 7 July 2025",
+                "task_is_done": false,
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "29 июня 2025 в 11:00"
+            },
+            {
+                "id": 4,
+                "task_name": "Написать код для ядра системы",
+                "task_description": "Реализовать основные функциональные компоненты.",
+                "task_priority": 2,
+                "task_due_date": "Wed, 9 July 2025",
+                "task_is_done": false,
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Разработать модуль авторизации",
+                        "is_completed": false
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "Реализовать базу данных",
+                        "is_completed": false
+                    }
+                ],
+                "is_focused": false,
+                "start_time": "30 июня 2025 в 09:00"
+            },
+            {
+                "id": 5,
+                "task_name": "Провести тестирование модулей",
+                "task_description": "Протестировать отдельные модули на наличие ошибок.",
+                "task_priority": 2,
+                "task_due_date": "Fri, 11 July 2025",
+                "task_is_done": false,
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "1 июля 2025 в 14:00"
+            },
+            {
+                "id": 6,
+                "task_name": "Разработать пользовательский интерфейс",
+                "task_description": "Создать интуитивно понятный интерфейс для пользователей.",
+                "task_priority": 2,
+                "task_due_date": "Tue, 15 July 2025",
+                "task_is_done": false,
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Создать прототип UI",
+                        "is_completed": false
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "Провести UX-тестирование",
+                        "is_completed": false
+                    }
+                ],
+                "is_focused": false,
+                "start_time": "2 июля 2025 в 10:00"
+            },
+            {
+                "id": 7,
+                "task_name": "Интеграция API",
+                "task_description": "Подключить внешние сервисы через API.",
+                "task_priority": 3,
+                "task_due_date": "Thu, 10 July 2025",
+                "task_is_done": true,
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "27 июня 2025 в 13:00"
+            },
+            {
+                "id": 8,
+                "task_name": "Оптимизировать производительность",
+                "task_description": "Улучшить скорость работы приложения.",
+                "task_priority": 2,
+                "task_due_date": "Mon, 14 July 2025",
+                "task_is_done": false,
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Профилировать код",
+                        "is_completed": false
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "Оптимизировать запросы к базе данных",
+                        "is_completed": false
+                    }
+                ],
+                "is_focused": false,
+                "start_time": "3 июля 2025 в 11:00"
+            },
+            {
+                "id": 9,
+                "task_name": "Подготовить документацию",
+                "task_description": "Создать техническую и пользовательскую документацию.",
+                "task_priority": 1,
+                "task_due_date": "Wed, 16 July 2025",
+                "task_is_done": false,
+                "task_subtasks": [],
+                "is_focused": false,
+                "start_time": "4 июля 2025 в 09:00"
+            },
+            {
+                "id": 10,
+                "task_name": "Провести бета-тестирование",
+                "task_description": "Запустить бета-версию для ограниченной группы пользователей.",
+                "task_priority": 3,
+                "task_due_date": "Fri, 18 July 2025",
+                "task_is_done": false,
+                "task_subtasks": [
+                    {
+                        "id": 1,
+                        "subtask_name": "Выбрать тестеров",
+                        "is_completed": false
+                    },
+                    {
+                        "id": 2,
+                        "subtask_name": "Собрать обратную связь",
+                        "is_completed": false
+                    }
+                ],
+                "is_focused": false,
+                "start_time": "5 июля 2025 в 10:00"
             }
         ]
     }

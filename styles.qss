@@ -42,9 +42,8 @@
     font-size: 28px;
     font-weight: 400;
     color: #353028;
-    margin-top: 5px;
-    font-family: 'Montserrat';
     margin-top: 0px;
+    font-family: 'Montserrat';
 }
 
 #task_top_info {
@@ -67,7 +66,7 @@
     color: #353028;
     font-weight: 400;
     padding: 0;
-    margin-top: 8px;
+    margin-top: 0px;
     margin-left: 1px;
     font-family: 'Montserrat';
 }
@@ -115,6 +114,14 @@
     max-width: 16777215;
     text-align: left;
     white-space: nowrap;
+}
+
+#add_task_2 {
+    margin-right: 50px;
+}
+
+#add_list {
+    margin-right: 100px;
 }
 
 #add_task_btn:hover, #edit_list_btn:hover, #add_task_2:hover, #add_list:hover {
@@ -165,6 +172,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    margin-top: 20px !important
 }
 
 #back_to_list_btn {
@@ -270,6 +278,7 @@
     color: #353028;
     font-weight: 300;
 }
+
 #QScrollArea {
     border: none;
     background-color: transparent;
@@ -305,6 +314,10 @@
     color: white;
     font-size: 14px;
     font-weight: 500;
+    min-width: 120px;
+    max-width: 120px;
+    min-height: 20px;
+    max-height: 20px;
 }
 
 #delete_button:hover {
@@ -318,6 +331,22 @@
     color: white;
     font-size: 14px;
     font-weight: 500;
+    min-width: 120px;
+    max-width: 120px;
+    min-height: 20px;
+    max-height: 20px;
+}
+
+#cancel_button {
+    background-color: #B1CCBB;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 120px;
+    max-width: 120px;
+    min-height: 20px;
+    max-height: 20px;
 }
 
 #done_button:hover {
@@ -550,16 +579,16 @@ QRadioButton {
 }
 
 QRadioButton::indicator {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     border: 1px solid #353028;
     border-radius: 7.5px;
 }
 
 QRadioButton::indicator:checked {
     background-color: #6C946D;
-    border: 3px solid #B1CCBB;
-    border-radius: 10px;
+    border: 1px solid #B1CCBB;
+    border-radius: 8px;
 }
 
 QRadioButton::indicator:hover {
@@ -890,8 +919,8 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 
 #list_task_count {
     color: #4A4A4A;
-    font-family: 'Segoe UI';
-    font-size: 14px;
+    font-family: 'Montserrat';
+    font-size: 16px;
     font-weight: 400;
     padding: 0;
     margin: 0;
@@ -900,8 +929,8 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 
 #list_name {
     color: #000000;
-    font-family: 'Segoe UI';
-    font-size: 16px;
+    font-family: 'Montserrat';
+    font-size: 18px;
     font-weight: 600;
     padding: 0;
     margin: 0;
@@ -1021,7 +1050,6 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
     border: none;
     min-height: 0px;
 }
-
 #focus_tasks_widget {
     background-color: #F3F2F3;
     border: none;
@@ -1137,3 +1165,170 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
     color: #4A7C5B;
 }
 
+QFrame#task_card {
+    background-color: #B1CCBB;
+    border-radius: 16px;
+    min-width: 0;
+}
+
+QLabel#task_name, QLabel#task_description, QLabel#description_label, QLabel#subtasks_label, QLabel#task_top_info {
+    background-color: transparent;
+}
+
+QPushButton#edit_button {
+    background-color: #6C946D;
+    border: none;
+    border-radius: 10px;
+    color: #F3F2F3;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 4px 12px;
+    min-width: 108px;
+    max-width: 108px;
+    min-height: 20px;
+    max-height: 20px;
+}
+
+QPushButton#edit_button:hover {
+    background-color: #8AB38B;
+}
+
+QPushButton#edit_button:pressed {
+    background-color: #4A7C5B;
+    color: #F3F2F3;
+}
+
+QCheckBox#task_checkbox, QCheckBox#subtask_checkbox {
+    background-color: transparent;
+    spacing: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+QCheckBox#task_checkbox::indicator {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #353028;
+    border-radius: 6px;
+    margin: 0px;
+    padding: 0px;
+}
+
+QCheckBox#subtask_checkbox::indicator {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #445e45;
+    border-radius: 4px;
+    padding: 0px;
+    margin-left: 2px;
+}
+
+QCheckBox#task_checkbox::indicator:checked, QCheckBox#subtask_checkbox::indicator:checked {
+    background-color: #6C946D;
+    border: 1px solid #445e45;
+    image: url(icons/check.png);
+}
+
+QCheckBox#task_checkbox::indicator:hover, QCheckBox#subtask_checkbox::indicator:hover {
+    border-color: #8AB38B;
+}
+
+QCheckBox#task_checkbox::indicator:checked:hover, QCheckBox#subtask_checkbox::indicator:checked:hover {
+    background-color: #8AB38B;
+}
+
+QWidget#checkbox_container, QWidget#subtask_widget {
+    background-color: transparent;
+}
+
+QScrollArea#subtasks_scroll {
+    border: none;
+    background-color: transparent;
+    margin-top: -8px;
+}
+
+QWidget#subtasks_container {
+    background-color: #B1CCBB;
+    border-radius: 8px;
+}
+
+QLabel#subtask_label {
+    font-size: 18px;
+    color: #353028;
+    font-weight: 400;
+    padding: 0px;
+    margin-top: 0px;
+    line-height: 18px;
+}
+
+#edit_button {
+    background-color: #6C946D;
+}
+
+QPushButton#done_button, QPushButton#delete_button, QPushButton#cancel_button {
+    background-color: unset;
+}
+
+QPushButton#done_button {
+    background-color: #6C946D !important;
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 120px;
+    max-width: 120px;
+    min-height: 20px;
+    max-height: 20px;
+}
+QPushButton#done_button:hover {
+    background-color: #8AB38B !important;
+}
+
+QPushButton#delete_button {
+    background-color: #FF6B6B !important;
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 120px;
+    max-width: 120px;
+    min-height: 20px;
+    max-height: 20px;
+}
+QPushButton#delete_button:hover {
+    background-color: #FF5252 !important;
+}
+
+QPushButton#cancel_button {
+    background-color: #B1CCBB !important;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 120px;
+    max-width: 120px;
+    min-height: 20px;
+    max-height: 20px;
+    color: #353028;
+}
+QPushButton#cancel_button:hover {
+    background-color: #8AB38B !important;
+    color: #F3F2F3;
+}
+
+QMessageBox QPushButton {
+    background-color: #6C946D;
+    color: #F3F2F3;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    min-width: 100px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #8AB38B;
+}

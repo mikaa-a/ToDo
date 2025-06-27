@@ -4,10 +4,13 @@ from PySide6.QtWidgets import QDialog, QApplication, QMainWindow, QLabel, QSizeP
 from PySide6.QtCore import QFile, Qt, QDate, QRect, QSize
 from PySide6.QtGui import QFontDatabase, QFont, QIcon
 from ui_mainwindow import Ui_Form
-from dialogs.dialog import AddTaskDialog, EditListDialog
+from dialogs.add_task_dialog import AddTaskDialog
+from dialogs.edit_list_dialog import EditListDialog
 from dialogs.add_list_dialog import AddListDialog
-from tasks.task_card import TaskCard
+from tasks.task_card import TaskCard, SubtaskWidget
+from tasks.focus_task_card import FocusTaskCard
 from utils.helpers import load_stylesheet
+from datetime import datetime
 
 class ListCard(QWidget):
     def __init__(self, list_name, uncompleted_task_count, list_index, main_window_instance, parent=None):
@@ -47,6 +50,7 @@ class ListCard(QWidget):
         # Добавляем название списка
         name_label = QLabel(list_name)
         name_label.setObjectName("list_name")
+        name_label.setStyleSheet("font-size: 24px; font-weight: 500;")
         name_label.setWordWrap(True)
         name_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         name_label.setMinimumWidth(0)
@@ -56,6 +60,7 @@ class ListCard(QWidget):
         # Добавляем количество невыполненных задач
         count_text = f"{uncompleted_task_count} {'невыполненная задача' if uncompleted_task_count == 1 else 'невыполненных задачи' if 1 < uncompleted_task_count < 5 else 'невыполненных задач'}"
         count_label = QLabel(count_text)
+        count_label.setStyleSheet("font-size: 18px;")
         count_label.setObjectName("list_task_count")
         count_label.setWordWrap(True)
         count_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -76,118 +81,6 @@ class ListCard(QWidget):
         if event.button() == Qt.LeftButton:
             # Вызываем метод open_list у экземпляра MainWindow
             self.main_window_instance.open_list(self)
-
-class FocusTaskCard(QWidget):
-    def __init__(self, task_name, date, priority, list_name, sub_tasks, parent=None):
-        super().__init__(parent)
-        self.init_ui(task_name, date, priority, list_name, sub_tasks)
-        
-        # Устанавливаем политику размеров для карточки
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.setMinimumWidth(0)
-        
-        # Создаем контейнер для стилей
-        self.container = QFrame()
-        self.container.setObjectName("focus_task_card")
-        self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.container.setMinimumWidth(0)
-        
-        # Основной layout для контейнера
-        self.main_layout = QVBoxLayout(self.container)
-        self.main_layout.setSpacing(8)
-        self.main_layout.setContentsMargins(16, 16, 16, 16)
-
-        # Верхняя часть с информацией о задаче
-        self.top_layout = QHBoxLayout()
-        self.top_layout.setContentsMargins(0, 0, 0, 0)
-        self.top_layout.setSpacing(8)
-        
-        # Левая часть с названием задачи
-        self.task_name = QLabel(task_name)
-        self.task_name.setObjectName("focus_task_name")
-        self.task_name.setWordWrap(True)
-        self.task_name.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.top_layout.addWidget(self.task_name)
-        
-        # Правая часть с информацией
-        info_text = f"{self.format_date(date)} • {list_name} • {self.get_priority_text(priority)}"
-        self.top_info = QLabel(info_text)
-        self.top_info.setObjectName("focus_task_info")
-        self.top_info.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.top_info.setAlignment(Qt.AlignRight | Qt.AlignTop)
-        self.top_layout.addWidget(self.top_info)
-        
-        self.main_layout.addLayout(self.top_layout)
-
-        # Подзадачи
-        if sub_tasks:
-            subtasks_list = [subtask.strip() for subtask in sub_tasks.split(';') if subtask.strip()]
-            if subtasks_list:
-                self.subtasks_container = QWidget()
-                self.subtasks_container.setObjectName("focus_subtasks_container")
-                self.subtasks_layout = QVBoxLayout(self.subtasks_container)
-                self.subtasks_layout.setSpacing(4)
-                self.subtasks_layout.setContentsMargins(0, 0, 0, 0)
-                
-                for subtask in subtasks_list:
-                    subtask_widget = QWidget()
-                    subtask_layout = QHBoxLayout(subtask_widget)
-                    subtask_layout.setContentsMargins(0, 0, 0, 0)
-                    subtask_layout.setSpacing(8)
-                    
-                    # Добавляем точку
-                    dot_label = QLabel("•")
-                    dot_label.setObjectName("focus_subtask_dot")
-                    dot_label.setFixedWidth(12)
-                    subtask_layout.addWidget(dot_label)
-                    
-                    # Добавляем текст подзадачи
-                    label = QLabel(subtask)
-                    label.setObjectName("focus_subtask_text")
-                    label.setWordWrap(True)
-                    subtask_layout.addWidget(label)
-                    
-                    self.subtasks_layout.addWidget(subtask_widget)
-                
-                self.main_layout.addWidget(self.subtasks_container)
-
-        # Устанавливаем layout для основного виджета
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.container)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSizeConstraint(QLayout.SetMinAndMaxSize)
-
-    def get_priority_text(self, priority: int):
-        match priority:
-            case 1:
-                return "Низкий приоритет"
-            case 2:
-                return "Средний приоритет"
-            case 3:
-                return "Высокий приоритет"
-            case 0:
-                return "Приоритет не задан"
-            case _:
-                return "Приоритет не задан"
-
-    def format_date(self, date_str: str) -> str:
-        if not date_str:
-            return "Дата не задана"
-        
-        try:
-            date = QDate.fromString(date_str, "ddd, d MMMM yyyy")
-            if not date.isValid():
-                return "Дата не задана"
-                
-            months = {
-                1: "января", 2: "февраля", 3: "марта", 4: "апреля",
-                5: "мая", 6: "июня", 7: "июля", 8: "августа",
-                9: "сентября", 10: "октября", 11: "ноября", 12: "декабря"
-            }
-            return f"{date.day()} {months[date.month()]} {date.year()}"
-        except Exception as e:
-            print(f"Ошибка при форматировании даты: {e}")
-            return "Дата не задана"
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -219,6 +112,7 @@ class MainWindow(QMainWindow):
             widget.setStyleSheet(widget.styleSheet() + "font-family: 'Montserrat';")
         for widget in self.findChildren(QPushButton):
             widget.setStyleSheet(widget.styleSheet() + "font-family: 'Montserrat';")
+            widget.setCursor(Qt.PointingHandCursor)
         for widget in self.findChildren(QComboBox):
             widget.setStyleSheet(widget.styleSheet() + "font-family: 'Montserrat';")
 
@@ -342,7 +236,7 @@ class MainWindow(QMainWindow):
         # Добавляем заголовок (если он еще не добавлен)
         if not self.ui.focus_mode.parent():
             self.ui.focus_mode.setObjectName("focus_mode")
-            self.ui.focus_mode.setStyleSheet("font-size: 24px; font-weight: 500; color: #333333;")
+            self.ui.focus_mode.setStyleSheet("font-size: 28px; font-weight: 600; color: #353028;")
             self.focus_page_layout.addWidget(self.ui.focus_mode)
         
         # Настраиваем область прокрутки
@@ -350,7 +244,7 @@ class MainWindow(QMainWindow):
         self.ui.tasks_scroll_area_2.setObjectName("tasks_scroll_area_2")
         self.ui.tasks_scroll_area_2.setWidgetResizable(True)
         self.ui.tasks_scroll_area_2.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.ui.tasks_scroll_area_2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.ui.tasks_scroll_area_2.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.ui.tasks_scroll_area_2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.ui.tasks_scroll_area_2.setMinimumWidth(600)
         self.ui.tasks_scroll_area_2.setMinimumHeight(0)
@@ -365,13 +259,14 @@ class MainWindow(QMainWindow):
         # Создаем лейаут для задач
         self.focus_tasks_layout = QVBoxLayout(self.focus_tasks_widget)
         self.focus_tasks_layout.setAlignment(Qt.AlignTop)
-        self.focus_tasks_layout.setSpacing(10)
+        self.focus_tasks_layout.setSpacing(0) 
         self.focus_tasks_layout.setContentsMargins(0, 0, 0, 72)
         
         # Устанавливаем виджет задач в область прокрутки
         self.ui.tasks_scroll_area_2.setWidget(self.focus_tasks_widget)
         
         # Добавляем область прокрутки в макет страницы
+        self.focus_page_layout.addSpacing(70)  # Увеличиваем отступ между заголовком и областью прокрутки
         self.focus_page_layout.addWidget(self.ui.tasks_scroll_area_2)
         
         # Устанавливаем макет для страницы фокусировки
@@ -508,12 +403,14 @@ class MainWindow(QMainWindow):
         self.ui.tasks_layout_3.setAlignment(Qt.AlignTop)
         
         # Настройка комбо бокса для списка
-        self.ui.priority_sort_select.addItems(["По возрастанию", "По убыванию", "Все приоритеты"])
+        self.ui.priority_sort_select.addItems(["По возрастанию", "По убыванию"])
+        self.ui.priority_sort_select.setCurrentIndex(1)  # По умолчанию "По убыванию"
         self.ui.sort_btn.setText("Применить")
         self.ui.sort_btn.clicked.connect(self.sort_tasks)
         
         # Настройка комбо бокса для всех задач
-        self.ui.priority_sort_select_2.addItems(["По возрастанию", "По убыванию", "Все приоритеты"])
+        self.ui.priority_sort_select_2.addItems(["По возрастанию", "По убыванию"])
+        self.ui.priority_sort_select_2.setCurrentIndex(1)  # По умолчанию "По убыванию"
         self.ui.sort_btn_2.setText("Применить")
         self.ui.sort_btn_2.clicked.connect(self.sort_all_tasks)
 
@@ -600,50 +497,13 @@ class MainWindow(QMainWindow):
 
         # Добавляем виджеты в макет с отступами
         self.my_lists_layout.addWidget(self.ui.horizontalLayoutWidget_3)
-        self.my_lists_layout.addSpacing(10)  # Отступ между заголовком и списками
+        self.my_lists_layout.addSpacing(-25)  # Отступ между заголовком и списками
         self.my_lists_layout.addWidget(self.ui.lists_scroll_area)
-
-        # Настраиваем макет для страницы "Режим фокусировки"
-        self.ui.focus_page_layout = QVBoxLayout(self.ui.focus_page)
-        self.ui.focus_page_layout.setContentsMargins(38, 38, 38, 38)
-        self.ui.focus_page_layout.setSpacing(10)
-        self.ui.focus_page_layout.setAlignment(Qt.AlignTop)
-
-        # Добавляем заголовок в макет
-        self.ui.focus_mode.setObjectName("focus_mode")
-        self.ui.focus_mode.setStyleSheet("font-size: 24px; font-weight: 500; color: #333333;")
-        self.ui.focus_page_layout.addWidget(self.ui.focus_mode)
 
         # Удаляем ненужный виджет task_selection
         if hasattr(self.ui, 'task_selection'):
             self.ui.task_selection.deleteLater()
             self.ui.task_selection = None
-
-        # Настраиваем область прокрутки для режима фокусировки
-        self.ui.tasks_scroll_area_2.setWidgetResizable(True)
-        self.ui.tasks_scroll_area_2.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.ui.tasks_scroll_area_2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.ui.tasks_scroll_area_2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.ui.tasks_scroll_area_2.setMinimumWidth(600)
-        self.ui.tasks_scroll_area_2.setMinimumHeight(0)
-
-        # Создаем виджет для задач в режиме фокусировки
-        self.focus_tasks_widget = QWidget()
-        self.focus_tasks_widget.setObjectName("focus_tasks_widget")
-        self.focus_tasks_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.focus_tasks_widget.setStyleSheet("background-color: #F3F2F3; border: none;")
-
-        # Создаем лейаут для задач в режиме фокусировки
-        self.focus_tasks_layout = QVBoxLayout(self.focus_tasks_widget)
-        self.focus_tasks_layout.setAlignment(Qt.AlignTop)
-        self.focus_tasks_layout.setSpacing(10)
-        self.focus_tasks_layout.setContentsMargins(0, 0, 0, 72)  # Добавляем нижний отступ для меню
-
-        # Устанавливаем виджет задач в область прокрутки
-        self.ui.tasks_scroll_area_2.setWidget(self.focus_tasks_widget)
-
-        # Добавляем область прокрутки в макет страницы фокусировки
-        self.ui.focus_page_layout.addWidget(self.ui.tasks_scroll_area_2)
 
         # Создаем лейаут для всех задач
         self.all_tasks_layout = QVBoxLayout(self.ui.tasks_container_4)
@@ -743,6 +603,16 @@ class MainWindow(QMainWindow):
         # Добавляем новый контейнер
         self.ui.content.insertWidget(ALL_TASKS_PAGE_INDEX, self.all_tasks_container)
         
+        # ---------------------- ФОКУС ДЕТАЛИЗАЦИЯ ----------------------
+        self.focus_detail_page = QWidget()
+        self.focus_detail_page.setObjectName("focus_detail_page")
+        self.focus_detail_layout = QVBoxLayout(self.focus_detail_page)
+        self.focus_detail_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        self.focus_detail_layout.setContentsMargins(38, 38, 38, 38)
+        self.focus_detail_layout.setSpacing(2)
+        FOCUS_DETAIL_PAGE_INDEX = 5
+        self.ui.content.insertWidget(FOCUS_DETAIL_PAGE_INDEX, self.focus_detail_page)
+
         # Очищаем ссылку на старый контейнер
         self.ui.tasks_container_4 = None
 
@@ -769,6 +639,12 @@ class MainWindow(QMainWindow):
         # Устанавливаем лейаут напрямую в контейнер
         self.ui.tasks_container_3.setLayout(self.ui.tasks_layout_3)
 
+        # После полной инициализации интерфейса устанавливаем курсор для всех кнопок
+        self.set_hand_cursor_for_all_buttons()
+
+        # Открываем экран 'Мои списки' при запуске
+        self.show_all_lists_page()
+
     def handle_resize(self, event):
         # Обновляем размеры при изменении размера окна
         super().resizeEvent(event)
@@ -782,13 +658,18 @@ class MainWindow(QMainWindow):
                 if data and len(data) > 0:
                     # Берем первый список задач
                     first_list = data[0]
+                    tasks = []
                     for task in first_list['tasks']:
                         # Форматируем подзадачи в строку
                         subtasks_text = ""
                         if task['task_subtasks']:
                             subtasks_text = "; ".join([subtask['subtask_name'] for subtask in task['task_subtasks']])
-                        
-                        # Добавляем задачу в интерфейс
+                        # Добавляем задачу в список для сортировки
+                        tasks.append((task, subtasks_text))
+                    # Сортировка по убыванию приоритета, если выбран этот пункт
+                    if self.ui.priority_sort_select.currentText() == "По убыванию":
+                        tasks.sort(key=lambda x: int(x[0]['task_priority']), reverse=True)
+                    for task, subtasks_text in tasks:
                         self.add_task_to_layout(
                             task['task_name'],
                             task['task_due_date'],
@@ -874,21 +755,36 @@ class MainWindow(QMainWindow):
                 except Exception as e:
                     print(f"Ошибка при обновлении названия списка: {e}")
         elif result == 2:  # Код удаления списка
-            # Удаляем все задачи из интерфейса
-            while self.tasks_layout.count():
-                item = self.tasks_layout.takeAt(0)
-                if item.widget():
-                    item.widget().deleteLater()
-            
-            # Очищаем JSON файл
+            # Получаем имя текущего списка
+            list_name = self.ui.list_text.text()
             try:
-                with open('data.json', 'w', encoding='utf-8') as file:
-                    json.dump([{
-                        "list_name": "Новый список",
-                        "id": 1,
-                        "tasks": []
-                    }], file, ensure_ascii=False, indent=4)
-                self.ui.list_text.setText("Новый список")
+                with open('data.json', 'r', encoding='utf-8') as file:
+                    data = json.load(file)
+                # Находим индекс списка по имени
+                index_to_remove = next((i for i, l in enumerate(data) if l['list_name'] == list_name), None)
+                if index_to_remove is not None:
+                    del data[index_to_remove]
+                    # Сохраняем обновленные данные
+                    with open('data.json', 'w', encoding='utf-8') as file:
+                        json.dump(data, file, ensure_ascii=False, indent=4)
+                # Очищаем layout задач
+                while self.tasks_layout.count():
+                    item = self.tasks_layout.takeAt(0)
+                    if item.widget():
+                        item.widget().deleteLater()
+                if hasattr(self, '_empty_list_widget'):
+                    self._empty_list_widget = None
+                # Если списки остались, показать первый, иначе сбросить заголовок
+                if data:
+                    self.ui.list_text.setText(data[0]['list_name'])
+                    self.open_list(ListCard(data[0]['list_name'], 0, 0, self))
+                else:
+                    self.ui.list_text.setText("")
+                    self.current_list_card = None
+                # Обновить отображение всех списков
+                self.load_lists()
+                # После удаления сразу отправляем на страницу всех списков
+                self.show_all_lists_page()
             except Exception as e:
                 print(f"Ошибка при удалении списка: {e}")
 
@@ -908,10 +804,8 @@ class MainWindow(QMainWindow):
             tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()))
         elif sort_type == "По убыванию":
             tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()), reverse=True)
-        elif sort_type == "Все приоритеты":
-            tasks.sort(key=lambda x: self.get_date_value(x.top_info.text().split(' • ')[0].strip()))
         
-        # Добавляем отсортированные задачи обратно в layout
+        # Добавляем задачи обратно в layout
         for task in tasks:
             self.tasks_layout.addWidget(task)
 
@@ -941,77 +835,345 @@ class MainWindow(QMainWindow):
     def show_all_tasks_page(self):
         self.stacked_widget.setCurrentIndex(3)  # Переключаем на страницу всех задач
         self.load_all_tasks()  # Загружаем все задачи
+        # Применяем сортировку по умолчанию
+        if self.ui.priority_sort_select_2.currentText() == "По убыванию":
+            self.sort_all_tasks()
+
+        # Проверяем, есть ли задачи
+        tasks_count = self.all_tasks_layout.count()
+        if tasks_count == 0:
+            # Скрываем фильтры и кнопку добавления
+            self.ui.priority_sort_select_2.hide()
+            self.ui.sort_btn_2.hide()
+            self.ui.add_task_2.hide()
+
+            # Если уже есть виджет пустого экрана — не добавляем второй раз
+            if not hasattr(self, 'empty_all_tasks_widget'):
+                self.empty_all_tasks_widget = QWidget()
+                outer_layout = QVBoxLayout(self.empty_all_tasks_widget)
+                self.empty_all_tasks_widget.setStyleSheet("margin-left: 45px")
+                outer_layout.setContentsMargins(0, 0, 0, 0)
+                outer_layout.setSpacing(0)
+                outer_layout.addStretch(1)
+
+                center_widget = QWidget()
+                center_layout = QVBoxLayout(center_widget)
+                center_layout.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                center_layout.setSpacing(16)
+                center_layout.setContentsMargins(0, 0, 0, 0)
+
+                title = QLabel("У вас нет задач")
+                title.setStyleSheet("font-size: 28px; font-weight: 600; color: #353028; margin-top: 60px;")
+                title.setAlignment(Qt.AlignCenter)
+                center_layout.addWidget(title)
+
+                subtitle = QLabel("Запланируем что нибудь?")
+                subtitle.setStyleSheet("font-size: 18px; color: #666666; margin-top: -4px;")
+                subtitle.setAlignment(Qt.AlignCenter)
+                center_layout.addWidget(subtitle)
+
+                add_btn = QPushButton("Добавить задачу")
+                add_btn.setStyleSheet("background-color: #6C946D; color: white; border-radius: 8px; padding: 10px 32px; font-size: 18px; font-weight: 500;")
+                add_btn.setCursor(Qt.PointingHandCursor)
+                center_layout.addWidget(add_btn, alignment=Qt.AlignHCenter)
+                add_btn.clicked.connect(self.show_add_task_from_all_tasks_empty)
+
+                outer_layout.addWidget(center_widget, alignment=Qt.AlignHCenter)
+                outer_layout.addStretch(1)
+
+                self.all_tasks_layout.addWidget(self.empty_all_tasks_widget)
+        else:
+            # Показываем фильтры и кнопку добавления
+            self.ui.priority_sort_select_2.show()
+            self.ui.sort_btn_2.show()
+            self.ui.add_task_2.show()
+            # Удаляем виджет пустого экрана, если он был
+            if hasattr(self, 'empty_all_tasks_widget') and self.empty_all_tasks_widget is not None:
+                self.empty_all_tasks_widget.setParent(None)
+                self.empty_all_tasks_widget = None
+
+    def show_add_task_from_all_tasks_empty(self):
+        dialog = AddTaskDialog(self, from_all_tasks=True)
+        if dialog.exec() == QDialog.Accepted:
+            selected_list_index = dialog.get_selected_list_index()
+            if selected_list_index is None or selected_list_index < 0:
+                QMessageBox.warning(self, "Ошибка", "Выберите список для задачи")
+                return
+            task_name = dialog.get_task_name()
+            date = dialog.get_due_date()
+            priority = dialog.get_priority()
+            description = dialog.get_description()
+            sub_tasks = dialog.get_subtasks()
+            # Добавляем задачу в интерфейс всех задач
+            task_card = TaskCard(task_name, date, priority, description, sub_tasks, 1, self)
+            self.all_tasks_layout.addWidget(task_card)
+            # Сохраняем задачу в JSON
+            try:
+                with open('data.json', 'r', encoding='utf-8') as file:
+                    data = json.load(file)
+                task_list = data[selected_list_index]
+                new_task = {
+                    "id": len(task_list['tasks']) + 1,
+                    "task_name": task_name,
+                    "task_description": description,
+                    "task_priority": priority,
+                    "task_due_date": date,
+                    "task_is_done": False,
+                    "task_subtasks": []
+                }
+                if sub_tasks:
+                    subtasks_list = [subtask.strip() for subtask in sub_tasks.split(';') if subtask.strip()]
+                    for i, subtask in enumerate(subtasks_list, 1):
+                        new_task["task_subtasks"].append({
+                            "id": i,
+                            "subtask_name": subtask,
+                            "is_completed": False
+                        })
+                task_list['tasks'].append(new_task)
+                with open('data.json', 'w', encoding='utf-8') as file:
+                    json.dump(data, file, ensure_ascii=False, indent=4)
+                # После добавления задачи обновляем страницу
+                self.show_all_tasks_page()
+            except Exception as e:
+                print(f"Ошибка при сохранении задачи: {e}")
 
     def show_all_lists_page(self):
         self.stacked_widget.setCurrentIndex(4)  # Переключаем на страницу списков
         self.load_lists()  # Загружаем списки
 
     def show_focus_page(self):
-        self.stacked_widget.setCurrentIndex(2)  # Переключаем на focus_page
-        self.load_focus_tasks()  # Загружаем все задачи в режим фокусировки
+        # если какая-то задача уже is_focused=True – открываем её сразу
+        try:
+            with open('data.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            for lst in data:
+                for t in lst['tasks']:
+                    if t.get('is_focused'):
+                        self.build_focus_detail_page(t, lst['list_name'])
+                        self.stacked_widget.setCurrentIndex(5)
+                        return
+        except Exception:
+            pass
+        # иначе обычный список задач
+        self.stacked_widget.setCurrentIndex(2)
+        self.load_focus_tasks()
 
     def load_focus_tasks(self):
-        # Очищаем текущий layout
+        # Чистим текущий layout
         while self.focus_tasks_layout.count():
             item = self.focus_tasks_layout.takeAt(0)
             if item.widget():
                 item.widget().deleteLater()
-        
         try:
             with open('data.json', 'r', encoding='utf-8') as file:
                 data = json.load(file)
-                
-                # Создаем список для всех задач
-                all_tasks = []
-                
-                for list_item in data:
-                    list_name = list_item['list_name']
-                    for task in list_item['tasks']:
-                        if not task['task_is_done']:  # Показываем только невыполненные задачи
-                            # Форматируем подзадачи в строку
-                            subtasks_text = ""
-                            if task['task_subtasks']:
-                                subtasks_text = "; ".join([subtask['subtask_name'] for subtask in task['task_subtasks']])
-                            
-                            # Создаем карточку задачи для режима фокусировки
-                            task_card = FocusTaskCard(
-                                task_name=task['task_name'],
-                                date=task['task_due_date'],
-                                priority=task['task_priority'],
-                                list_name=list_name,
-                                sub_tasks=subtasks_text,
-                                parent=self.focus_tasks_widget  # Устанавливаем правильного родителя
-                            )
-                            
-                            # Добавляем задачу в список вместе с информацией для сортировки
-                            all_tasks.append({
-                                'card': task_card,
-                                'priority': task['task_priority'],
-                                'date': task['task_due_date']
-                            })
-                
-                # Сортируем задачи по приоритету (по убыванию) и дате (по возрастанию)
-                def sort_key(task_info):
-                    priority = task_info['priority']
-                    date_str = task_info['date']
-                    try:
-                        date = QDate.fromString(date_str, "ddd, d MMMM yyyy")
-                        if date.isValid():
-                            days_to_date = QDate.currentDate().daysTo(date)
-                            return (-priority, days_to_date)
-                    except:
-                        pass
-                    return (-priority, float('inf'))
-                
-                # Сортируем задачи
-                sorted_tasks = sorted(all_tasks, key=sort_key)
-                
-                # Добавляем отсортированные задачи в layout
-                for task_info in sorted_tasks:
-                    self.focus_tasks_layout.addWidget(task_info['card'])
-                    
+            uncompleted_tasks, completed_tasks = [], []
+            for task_list in data:                                  # каждый список в файле
+                list_name = task_list['list_name']
+                for task in task_list['tasks']:                     # каждая задача
+                    # собираем подзадачи в строку
+                    subtasks_text = "; ".join(
+                        sub['subtask_name'] for sub in task['task_subtasks']
+                    ) if task['task_subtasks'] else ""
+                    # создаём специальную карточку для режима фокусировки
+                    card = FocusTaskCard(
+                        task['task_name'],
+                        task['task_due_date'],
+                        task['task_priority'],
+                        task['task_description'],
+                        subtasks_text,
+                        task['id'],
+                        self
+                    )
+                    card.mousePressEvent = (
+                        lambda e, tid=task['id'], lname=list_name:
+                            self.open_focus_task(tid, lname) if e.button() == Qt.LeftButton else None
+                    )
+                    # распределяем по спискам
+                    if task['task_is_done']:
+                        completed_tasks.append(card)
+                    else:
+                        uncompleted_tasks.append(card)
+            # сортируем – приоритет берём так же, как в get_priority_value
+            def prio(card_widget):
+                text = card_widget.top_info.text().split(' • ')[1].strip()
+                return self.get_priority_value(text)
+            uncompleted_tasks.sort(key=prio, reverse=True)
+            # completed_tasks.sort(key=prio, reverse=True)
+            
+            # Проверяем, есть ли незавершенные задачи
+            if len(uncompleted_tasks) == 0:
+                # Создаем виджет пустого экрана для фокусировки
+                empty_focus_widget = QWidget()
+                outer_layout = QVBoxLayout(empty_focus_widget)
+                outer_layout.setContentsMargins(0, 0, 0, 0)
+                outer_layout.setSpacing(0)
+                outer_layout.addStretch(1)
+
+                center_widget = QWidget()
+                center_layout = QVBoxLayout(center_widget)
+                center_layout.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                center_layout.setSpacing(16)
+                center_layout.setContentsMargins(0, 0, 0, 0)
+
+                title = QLabel("Нет незавершенных задач")
+                title.setStyleSheet("font-size: 28px; font-weight: 600; color: #353028; margin-top: 60px;")
+                title.setAlignment(Qt.AlignCenter)
+                center_layout.addWidget(title)
+
+                outer_layout.addWidget(center_widget, alignment=Qt.AlignHCenter)
+                outer_layout.addStretch(1)
+
+                self.focus_tasks_layout.addWidget(empty_focus_widget)
+            else:
+                for card in uncompleted_tasks:
+                    self.focus_tasks_layout.addWidget(card)
+            # for card in uncompleted_tasks + completed_tasks:
+            #     self.focus_tasks_layout.addWidget(card)
         except Exception as e:
             print(f"Ошибка при загрузке задач в режиме фокусировки: {e}")
+
+    def build_focus_detail_page(self, task_dict, list_name):
+        from tasks.task_card import SubtaskWidget
+        # Минимальный spacing для основного layout
+        self.focus_detail_layout.setSpacing(2)
+        while self.focus_detail_layout.count():
+            item = self.focus_detail_layout.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+        # --- название задачи ---
+        title = QLabel(task_dict['task_name'])
+        title.setStyleSheet("font-size: 28px; font-weight: 600; color: #353028; padding: 0; margin-left: -4px")
+        title.setAlignment(Qt.AlignLeft)
+        title.setWordWrap(True)
+        self.focus_detail_layout.addWidget(title)
+        self.focus_detail_layout.addSpacing(8)  # Меньше расстояние после названия
+        # --- описание (без скролла, обычный QLabel, переносится до конца экрана) ---
+        desc = QLabel(task_dict.get('task_description', ''))
+        desc.setWordWrap(True)
+        desc.setStyleSheet("font-size: 16px; color: #353028; padding: 0;")
+        desc.setAlignment(Qt.AlignLeft)
+        desc.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.focus_detail_layout.addWidget(desc)
+        self.focus_detail_layout.addSpacing(18)  # Большее расстояние после описания
+        # --- подзадачи ----
+        if task_dict['task_subtasks']:
+            subtasks_container = QWidget()
+            subtasks_layout = QVBoxLayout(subtasks_container)
+            subtasks_layout.setContentsMargins(0, 0, 0, 0)
+            subtasks_layout.setSpacing(6)  # минимальное расстояние между подзадачами
+            for sub in task_dict['task_subtasks']:
+                subtask_widget = SubtaskWidget(sub['subtask_name'])
+                subtask_widget.setFixedHeight(22)
+                subtask_widget.checkbox.setChecked(sub['is_completed'])
+                # subtask_widget.checkbox.setEnabled(False)  # теперь чекбокс активен
+                # Подключаем обработчик клика
+                subtask_widget.checkbox.clicked.connect(
+                    lambda checked, w=subtask_widget, sid=task_dict['id'], lname=list_name, sname=sub['subtask_name']:
+                        self.handle_focus_subtask_click(checked, w, sid, lname, sname)
+                )
+                subtasks_layout.addWidget(subtask_widget)
+            # Ограниченная область с прокруткой только для подзадач
+            from PySide6.QtWidgets import QScrollArea
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            scroll.setMinimumHeight(40)
+            scroll.setMaximumHeight(100)
+            scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
+            subtasks_container.setStyleSheet("background: transparent;")
+            scroll.setWidget(subtasks_container)
+            self.focus_detail_layout.addWidget(scroll)
+            self.focus_detail_layout.addSpacing(18)  # Большее расстояние после подзадач
+        else:
+            self.focus_detail_layout.addSpacing(8)  # Если нет подзадач, чуть меньше
+        # --- время старта ---
+        start_lbl = QLabel(f"Начата {task_dict.get('start_time', '')}")
+        start_lbl.setStyleSheet("font-size: 14px; color: #666666; padding: 0;")
+        start_lbl.setAlignment(Qt.AlignLeft)
+        self.focus_detail_layout.addWidget(start_lbl)
+        self.focus_detail_layout.addSpacing(1)
+        # --- кнопки ---
+        self.focus_detail_layout.addStretch(1)  # Кнопки всегда внизу
+        row_btns = QWidget()
+        row_lay = QHBoxLayout(row_btns)
+        row_lay.setAlignment(Qt.AlignLeft)
+        row_lay.setSpacing(10)
+        row_lay.setContentsMargins(0, 0, 0, 0)
+        exit_btn = QPushButton("Выйти из фокусирования")
+        exit_btn.setStyleSheet("background-color:#4C4C4C;color:#FFFFFF;border-radius:8px;"
+                               "padding:6px 10px;font-size:13px;")
+        finish_btn = QPushButton("Завершить задачу")
+        finish_btn.setStyleSheet("background-color:#6C946D;color:#FFFFFF;border-radius:8px;"
+                                 "padding:6px 10px;font-size:13px;")
+        row_lay.addWidget(exit_btn)
+        row_lay.addWidget(finish_btn)
+        self.focus_detail_layout.addWidget(row_btns)
+        exit_btn.clicked.connect(self.exit_focus_task)
+        finish_btn.clicked.connect(lambda: self.finish_focus_task(task_dict['id'], list_name))
+        row_btns.setStyleSheet("""margin-bottom: 40px""")
+
+    def open_focus_task(self, task_id, list_name):
+        """Помечает задачу как is_focused=True, проставляет start_time и переводит на детальную страницу."""
+        try:
+            with open('data.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            # сбрасываем предыдущий фокус
+            for lst in data:
+                for t in lst['tasks']:
+                    t['is_focused'] = False
+            target = None
+            for lst in data:
+                if lst['list_name'] == list_name:
+                    for t in lst['tasks']:
+                        if t['id'] == task_id:
+                            t['is_focused'] = True
+                            now = datetime.now()
+                            months = ["января","февраля","марта","апреля","мая","июня",
+                                      "июля","августа","сентября","октября","ноября","декабря"]
+                            t['start_time'] = f"{now.day} {months[now.month-1]} {now.year} в {now.strftime('%H:%M')}"
+                            target = t
+                            break
+            with open('data.json', 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+            if target:
+                self.build_focus_detail_page(target, list_name)
+                self.stacked_widget.setCurrentIndex(5)
+        except Exception as e:
+            print(f"Ошибка при открытии фокус-задачи: {e}")
+
+    def exit_focus_task(self):
+        """Сброс фокуса без завершения задачи."""
+        try:
+            with open('data.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            for lst in data:
+                for t in lst['tasks']:
+                    t['is_focused'] = False
+            with open('data.json', 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+        except Exception:
+            pass
+        self.show_focus_page()
+
+    def finish_focus_task(self, task_id, list_name):
+        """Помечает задачу как выполненную и сбрасывает фокус."""
+        try:
+            with open('data.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            for lst in data:
+                if lst['list_name'] == list_name:
+                    for t in lst['tasks']:
+                        if t['id'] == task_id:
+                            t['task_is_done'] = True
+                            t['is_focused'] = False
+                            break
+            with open('data.json', 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"Ошибка при завершении задачи: {e}")
+        self.show_focus_page()
 
     def sort_all_tasks(self):
         # Получаем текущий выбор из комбо бокса
@@ -1029,10 +1191,8 @@ class MainWindow(QMainWindow):
             tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()))
         elif sort_type == "По убыванию":
             tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()), reverse=True)
-        elif sort_type == "Все приоритеты":
-            tasks.sort(key=lambda x: self.get_date_value(x.top_info.text().split(' • ')[0].strip()))
         
-        # Добавляем отсортированные задачи обратно в layout
+        # Добавляем задачи обратно в layout
         for task in tasks:
             self.all_tasks_layout.addWidget(task)
 
@@ -1093,16 +1253,63 @@ class MainWindow(QMainWindow):
                 print(f"Ошибка при сохранении задачи: {e}")
 
     def load_lists(self):
-        # Очищаем текущий layout
-        while self.ui.tasks_layout_3.count():
-            item = self.ui.tasks_layout_3.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+        widgets_to_remove = []
+        for i in range(self.ui.tasks_layout_3.count()):
+            item = self.ui.tasks_layout_3.itemAt(i)
+            widget = item.widget()
+            if widget and (not hasattr(self, 'empty_lists_widget') or widget != self.empty_lists_widget):
+                widgets_to_remove.append(widget)
+        for widget in widgets_to_remove:
+            self.ui.tasks_layout_3.removeWidget(widget)
+            widget.deleteLater()
 
         try:
             with open('data.json', 'r', encoding='utf-8') as file:
                 data = json.load(file)
-                
+
+                if len(data) == 0:
+                    # Пустой экран для "Мои списки"
+                    self.ui.add_list.hide()
+                    # Удаляем старый пустой экран, если он есть
+                    if hasattr(self, 'empty_lists_widget') and self.empty_lists_widget is not None:
+                        self.empty_lists_widget.setParent(None)
+                        self.empty_lists_widget.deleteLater()
+                        self.empty_lists_widget = None
+                    # Создаём новый пустой экран
+                    self.empty_lists_widget = QWidget()
+                    outer_layout = QVBoxLayout(self.empty_lists_widget)
+                    self.empty_lists_widget.setStyleSheet("margin-left: 45px")
+                    outer_layout.setContentsMargins(0, 0, 0, 0)
+                    outer_layout.setSpacing(0)
+                    outer_layout.addStretch(1)
+                    center_widget = QWidget()
+                    center_layout = QVBoxLayout(center_widget)
+                    center_layout.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                    center_layout.setSpacing(16)
+                    center_layout.setContentsMargins(0, 0, 0, 0)
+                    title = QLabel("У вас нет списков")
+                    title.setStyleSheet("font-size: 28px; font-weight: 600; color: #353028;")
+                    title.setAlignment(Qt.AlignCenter)
+                    center_layout.addWidget(title)
+                    subtitle = QLabel("Запланируем что нибудь?")
+                    subtitle.setStyleSheet("font-size: 18px; color: #666666; margin-top: -4px;")
+                    subtitle.setAlignment(Qt.AlignCenter)
+                    center_layout.addWidget(subtitle)
+                    add_btn = QPushButton("Добавить список")
+                    add_btn.setStyleSheet("background-color: #6C946D; color: white; border-radius: 8px; padding: 10px 32px; font-size: 18px; font-weight: 500; margin-bottom: 50px;")
+                    add_btn.setCursor(Qt.PointingHandCursor)
+                    center_layout.addWidget(add_btn, alignment=Qt.AlignHCenter)
+                    add_btn.clicked.connect(self.show_add_list_dialog)
+                    outer_layout.addWidget(center_widget, alignment=Qt.AlignHCenter)
+                    outer_layout.addStretch(1)
+                    self.ui.tasks_layout_3.addWidget(self.empty_lists_widget)
+                else:
+                    self.ui.add_list.show()
+                    # Удаляем пустой экран, если он был
+                    if hasattr(self, 'empty_lists_widget') and self.empty_lists_widget is not None:
+                        self.empty_lists_widget.setParent(None)
+                        self.empty_lists_widget = None
+
                 for list_item in data:
                     # Подсчитываем количество невыполненных задач
                     uncompleted_task_count = 0
@@ -1118,17 +1325,26 @@ class MainWindow(QMainWindow):
                         self,
                         self.ui.tasks_container_3
                     )
-                    
                     # Добавляем карточку в layout
                     self.ui.tasks_layout_3.addWidget(list_card)
-                    
         except Exception as e:
             print(f"Ошибка при загрузке списков: {e}")
 
     def open_list(self, list_card):
+        # Проверяем, что список существует и индекс валиден
+        if not hasattr(list_card, 'list_index'):
+            self.current_list_card = None
+            return
+        list_index = list_card.list_index
+        with open('data.json', 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        if not (0 <= list_index < len(data)):
+            self.current_list_card = None
+            return
+        # Сохраняем текущий выбранный список
+        self.current_list_card = list_card
         # Получаем индекс списка из свойства карточки
         list_index = list_card.list_index
-        
         try:
             with open('data.json', 'r', encoding='utf-8') as file:
                 data = json.load(file)
@@ -1138,7 +1354,7 @@ class MainWindow(QMainWindow):
                         item = self.tasks_layout.takeAt(0)
                         if item.widget():
                             item.widget().deleteLater()
-                    
+                        
                     # Устанавливаем название списка
                     self.ui.list_text.setText(data[list_index]['list_name'])
                     
@@ -1181,14 +1397,119 @@ class MainWindow(QMainWindow):
                         else:
                             uncompleted_tasks.append(task_card)
                     
+                    # Сортировка по убыванию приоритета, если выбран этот пункт
+                    if self.ui.priority_sort_select.currentText() == "По убыванию":
+                        uncompleted_tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()), reverse=True)
+                        completed_tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()), reverse=True)
                     # Сначала добавляем невыполненные задачи
                     for task_card in uncompleted_tasks:
                         self.tasks_layout.addWidget(task_card)
-                    
                     # Затем добавляем выполненные задачи
                     for task_card in completed_tasks:
                         self.tasks_layout.addWidget(task_card)
                     
+                    # Если задач нет вообще, показать блок с уведомлением и кнопкой
+                    if not uncompleted_tasks and not completed_tasks:
+                        # Скрываем сортировку, кнопку добавления задачи и точку-разделитель
+                        self.ui.priority_sort_select.hide()
+                        self.ui.sort_btn.hide()
+                        self.ui.add_task_btn.hide()
+                        header_dot = self.findChild(QLabel, "header_dot")
+                        if header_dot:
+                            header_dot.hide()
+                        # Удаляем старый блок уведомления, если он есть
+                        if hasattr(self, '_empty_list_widget') and self._empty_list_widget is not None:
+                            self._empty_list_widget.setParent(None)
+                            self._empty_list_widget.deleteLater()
+                            self._empty_list_widget = None
+                        # Создаём новый блок уведомления
+                        empty_list_widget = QWidget()
+                        self._empty_list_widget = empty_list_widget
+                        outer_layout = QVBoxLayout(empty_list_widget)
+                        outer_layout.setContentsMargins(35, 50, 0, 0)
+                        outer_layout.setSpacing(0)
+                        outer_layout.addStretch(1)
+
+                        center_widget = QWidget()
+                        center_layout = QVBoxLayout(center_widget)
+                        center_layout.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                        center_layout.setSpacing(16)
+                        center_layout.setContentsMargins(0, 0, 0, 0)
+
+                        title = QLabel("У вас нет задач")
+                        title.setStyleSheet("font-size: 28px; font-weight: 600; color: #353028;")
+                        title.setAlignment(Qt.AlignCenter)
+                        center_layout.addWidget(title)
+
+                        subtitle = QLabel("Запланируем что нибудь?")
+                        subtitle.setStyleSheet("font-size: 18px; color: #666666; margin-top: -4px;")
+                        subtitle.setAlignment(Qt.AlignCenter)
+                        center_layout.addWidget(subtitle)
+
+                        add_btn = QPushButton("Добавить задачу")
+                        add_btn.setStyleSheet("background-color: #6C946D; color: white; border-radius: 8px; padding: 10px 32px; font-size: 18px; font-weight: 500;")
+                        add_btn.setCursor(Qt.PointingHandCursor)
+                        center_layout.addWidget(add_btn, alignment=Qt.AlignHCenter)
+                        def open_add_task():
+                            dialog = AddTaskDialog(self)
+                            if dialog.exec() == QDialog.Accepted:
+                                task_name = dialog.get_task_name()
+                                date = dialog.get_due_date()
+                                priority = dialog.get_priority()
+                                description = dialog.get_description()
+                                sub_tasks = dialog.get_subtasks()
+                                self.add_task_to_layout(task_name, date, priority, description, sub_tasks, self.tasks_layout.count() + 1)
+                                # Сохраняем задачу в JSON
+                                try:
+                                    with open('data.json', 'r', encoding='utf-8') as file:
+                                        data = json.load(file)
+                                    # Получаем текущий список
+                                    list_name = self.ui.list_text.text()
+                                    task_list = next((l for l in data if l['list_name'] == list_name), None)
+                                    if task_list is not None:
+                                        new_task = {
+                                            "id": len(task_list['tasks']) + 1,
+                                            "task_name": task_name,
+                                            "task_description": description,
+                                            "task_priority": priority,
+                                            "task_due_date": date,
+                                            "task_is_done": False,
+                                            "task_subtasks": []
+                                        }
+                                        if sub_tasks:
+                                            subtasks_list = [subtask.strip() for subtask in sub_tasks.split(';') if subtask.strip()]
+                                            for i, subtask in enumerate(subtasks_list, 1):
+                                                new_task["task_subtasks"].append({
+                                                    "id": i,
+                                                    "subtask_name": subtask,
+                                                    "is_completed": False
+                                                })
+                                        task_list['tasks'].append(new_task)
+                                        with open('data.json', 'w', encoding='utf-8') as file:
+                                            json.dump(data, file, ensure_ascii=False, indent=4)
+                                        # После добавления задачи обновить список
+                                        self.open_list(list_card)
+                                except Exception as e:
+                                    print(f"Ошибка при сохранении задачи: {e}")
+                        add_btn.clicked.connect(open_add_task)
+
+                        outer_layout.addWidget(center_widget, alignment=Qt.AlignHCenter)
+                        outer_layout.addStretch(1)
+                        self.tasks_layout.addWidget(empty_list_widget)
+                    else:
+                        # Показываем сортировку, кнопку добавления задачи и точку-разделитель
+                        self.ui.priority_sort_select.show()
+                        self.ui.sort_btn.show()
+                        self.ui.add_task_btn.show()
+                        header_dot = self.findChild(QLabel, "header_dot")
+                        if header_dot:
+                            header_dot.show()
+                        # Удаляем блок уведомления, если он есть
+                        if hasattr(self, '_empty_list_widget') and self._empty_list_widget is not None:
+                            self._empty_list_widget.setParent(None)
+                            self._empty_list_widget.deleteLater()
+                            self._empty_list_widget = None
+
                     # Переключаемся на страницу списка
                     self.stacked_widget.setCurrentIndex(1)
                     
@@ -1196,27 +1517,29 @@ class MainWindow(QMainWindow):
             print(f"Ошибка при открытии списка: {e}")
 
     def load_all_tasks(self):
-        # Очищаем текущий layout
-        while self.all_tasks_layout.count():
-            item = self.all_tasks_layout.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+        # Очищаем текущий layout, но не удаляем empty_all_tasks_widget
+        widgets_to_remove = []
+        for i in range(self.all_tasks_layout.count()):
+            item = self.all_tasks_layout.itemAt(i)
+            widget = item.widget()
+            if widget and (not hasattr(self, 'empty_all_tasks_widget') or widget != self.empty_all_tasks_widget):
+                widgets_to_remove.append(widget)
+        for widget in widgets_to_remove:
+            self.all_tasks_layout.removeWidget(widget)
+            widget.deleteLater()
 
         try:
             with open('data.json', 'r', encoding='utf-8') as file:
                 data = json.load(file)
-                
                 # Создаем списки для выполненных и невыполненных задач
                 completed_tasks = []
                 uncompleted_tasks = []
-                
                 for list_item in data:
                     for task in list_item['tasks']:
                         # Форматируем подзадачи в строку
                         subtasks_text = ""
                         if task['task_subtasks']:
                             subtasks_text = "; ".join([subtask['subtask_name'] for subtask in task['task_subtasks']])
-                        
                         # Создаем карточку задачи
                         task_card = TaskCard(
                             task['task_name'],
@@ -1227,7 +1550,6 @@ class MainWindow(QMainWindow):
                             task['id'],
                             self
                         )
-                        
                         # Если задача выполнена, отмечаем её как выполненную
                         if task['task_is_done']:
                             task_card.checkbox.setChecked(True)
@@ -1244,15 +1566,16 @@ class MainWindow(QMainWindow):
                             completed_tasks.append(task_card)
                         else:
                             uncompleted_tasks.append(task_card)
-                
+                # Сортировка по убыванию приоритета, если выбран этот пункт
+                if self.ui.priority_sort_select_2.currentText() == "По убыванию":
+                    uncompleted_tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()), reverse=True)
+                    completed_tasks.sort(key=lambda x: self.get_priority_value(x.top_info.text().split(' • ')[1].strip()), reverse=True)
                 # Сначала добавляем невыполненные задачи
                 for task_card in uncompleted_tasks:
                     self.all_tasks_layout.addWidget(task_card)
-                
                 # Затем добавляем выполненные задачи
                 for task_card in completed_tasks:
                     self.all_tasks_layout.addWidget(task_card)
-                    
         except Exception as e:
             print(f"Ошибка при загрузке всех задач: {e}")
 
@@ -1286,6 +1609,30 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 print(f"Ошибка при добавлении списка: {e}")
                 QMessageBox.critical(self, "Ошибка", "Не удалось добавить список")
+
+    def set_hand_cursor_for_all_buttons(self):
+        for btn in self.findChildren(QPushButton):
+            btn.setCursor(Qt.PointingHandCursor)
+
+    def handle_focus_subtask_click(self, checked, subtask_widget, task_id, list_name, subtask_name):
+        """Обновляет статус подзадачи в data.json и стиль подписи."""
+        subtask_widget.update_style()
+        try:
+            with open('data.json', 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            for lst in data:
+                if lst['list_name'] == list_name:
+                    for task in lst['tasks']:
+                        if task['id'] == task_id:
+                            for sub in task['task_subtasks']:
+                                if sub['subtask_name'] == subtask_name:
+                                    sub['is_completed'] = checked
+                                    break
+                            break
+            with open('data.json', 'w', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"Ошибка при сохранении статуса подзадачи (фокус): {e}")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
